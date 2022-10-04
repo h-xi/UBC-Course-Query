@@ -1,0 +1,18 @@
+{
+  "title": "query missing where using wrong name should reject with an InsightError",
+  "input": {
+    "where": {
+      "GT": {
+        "sections_avg": 98
+      }
+    },
+    "OPTIONS": {
+      "COLUMNS": [
+        "sections_dept",
+        "sections_avg"
+      ]
+    }
+  },
+  "errorExpected": true,
+  "expected": "InsightError"
+}

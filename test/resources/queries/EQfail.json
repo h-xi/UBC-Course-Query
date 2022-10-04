@@ -1,0 +1,96 @@
+{
+  "title": "query with EQ and fail",
+  "input": {
+    "WHERE": {
+      "EQ": {
+        "sections_fail": 39
+      }
+    },
+    "OPTIONS": {
+      "COLUMNS": [
+        "sections_dept",
+        "sections_id"
+      ],
+      "ORDER": "sections_id"
+    }
+  },
+  "errorExpected": false,
+  "expected": [
+    {
+      "sections_dept": "span",
+      "sections_id": "101"
+    },
+    {
+      "sections_dept": "phys",
+      "sections_id": "101"
+    },
+    {
+      "sections_dept": "math",
+      "sections_id": "101"
+    },
+    {
+      "sections_dept": "econ",
+      "sections_id": "102"
+    },
+    {
+      "sections_dept": "biol",
+      "sections_id": "112"
+    },
+    {
+      "sections_dept": "chem",
+      "sections_id": "121"
+    },
+    {
+      "sections_dept": "busi",
+      "sections_id": "121"
+    },
+    {
+      "sections_dept": "chem",
+      "sections_id": "123"
+    },
+    {
+      "sections_dept": "micb",
+      "sections_id": "202"
+    },
+    {
+      "sections_dept": "chem",
+      "sections_id": "203"
+    },
+    {
+      "sections_dept": "chem",
+      "sections_id": "203"
+    },
+    {
+      "sections_dept": "math",
+      "sections_id": "215"
+    },
+    {
+      "sections_dept": "psyc",
+      "sections_id": "218"
+    },
+    {
+      "sections_dept": "psyc",
+      "sections_id": "218"
+    },
+    {
+      "sections_dept": "psyc",
+      "sections_id": "218"
+    },
+    {
+      "sections_dept": "math",
+      "sections_id": "220"
+    },
+    {
+      "sections_dept": "econ",
+      "sections_id": "302"
+    },
+    {
+      "sections_dept": "chem",
+      "sections_id": "312"
+    },
+    {
+      "sections_dept": "chem",
+      "sections_id": "312"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "title": "query dataset not exist should reject with an InsightError",
+  "input": {
+    "WHERE":{
+      "GT":{
+        "haha_avg":97
+      }
+    },
+    "OPTIONS":{
+      "COLUMNS":[
+        "haha_dept",
+        "haha_avg"
+      ],
+      "ORDER":"haha_avg"
+    }
+  },
+  "errorExpected": true,
+  "expected": "InsightError"
+}

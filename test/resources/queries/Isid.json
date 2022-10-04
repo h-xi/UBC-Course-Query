@@ -1,0 +1,52 @@
+{
+  "title": "query with IS and id",
+  "input": {
+    "WHERE": {
+      "IS": {
+        "sections_id": "229"
+      }
+    },
+    "OPTIONS": {
+      "COLUMNS": [
+        "sections_dept",
+        "sections_id"
+      ],
+      "ORDER": "sections_id"
+    }
+  },
+  "errorExpected": false,
+  "expected": [
+    {
+      "sections_dept": "phys",
+      "sections_id": "229"
+    },
+    {
+      "sections_dept": "phys",
+      "sections_id": "229"
+    },
+    {
+      "sections_dept": "phys",
+      "sections_id": "229"
+    },
+    {
+      "sections_dept": "phys",
+      "sections_id": "229"
+    },
+    {
+      "sections_dept": "phys",
+      "sections_id": "229"
+    },
+    {
+      "sections_dept": "phys",
+      "sections_id": "229"
+    },
+    {
+      "sections_dept": "phys",
+      "sections_id": "229"
+    },
+    {
+      "sections_dept": "phys",
+      "sections_id": "229"
+    }
+  ]
+}
