@@ -1,0 +1,19 @@
+{
+  "title": "query with wrong asterisks reject with an InsightError",
+  "input": {
+    "WHERE": {
+      "IS": {
+        "sections_dept": "ha*hahaha*"
+      }
+    },
+    "OPTIONS": {
+      "COLUMNS": [
+        "sections_dept",
+        "sections_avg"
+      ],
+      "ORDER": "sections_avg"
+    }
+  },
+  "errorExpected": true,
+  "expected": "InsightError"
+}

@@ -1,0 +1,46 @@
+{
+  "title": "query with IS and instructor",
+  "input": {
+    "WHERE": {
+      "IS": {
+        "sections_instructor": "lester*"
+      }
+    },
+    "OPTIONS": {
+      "COLUMNS": [
+        "sections_dept",
+        "sections_avg",
+        "sections_instructor"
+      ],
+      "ORDER": "sections_avg"
+    }
+  },
+  "errorExpected": false,
+  "expected": [
+    {
+      "sections_dept": "fist",
+      "sections_avg": 72.58,
+      "sections_instructor": "lester, peter"
+    },
+    {
+      "sections_dept": "fist",
+      "sections_avg": 74.22,
+      "sections_instructor": "lester, peter"
+    },
+    {
+      "sections_dept": "fist",
+      "sections_avg": 74.42,
+      "sections_instructor": "lester, peter"
+    },
+    {
+      "sections_dept": "fist",
+      "sections_avg": 74.9,
+      "sections_instructor": "lester, peter"
+    },
+    {
+      "sections_dept": "fmst",
+      "sections_avg": 78.05,
+      "sections_instructor": "lester-smith, donna"
+    }
+  ]
+}

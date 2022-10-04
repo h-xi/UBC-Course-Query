@@ -1,0 +1,24 @@
+{
+  "title": "query with IS and uuid",
+  "input": {
+    "WHERE": {
+      "IS": {
+        "sections_uuid": "623"
+      }
+    },
+    "OPTIONS": {
+      "COLUMNS": [
+        "sections_dept",
+        "sections_avg"
+      ],
+      "ORDER": "sections_avg"
+    }
+  },
+  "errorExpected": false,
+  "expected": [
+    {
+      "sections_dept": "spph",
+      "sections_avg": 82.08
+    }
+  ]
+}

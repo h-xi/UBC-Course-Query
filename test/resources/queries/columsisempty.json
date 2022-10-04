@@ -1,0 +1,15 @@
+{
+  "title": "query with empty column",
+  "input": {
+    "WHERE": {
+      "IS": {
+        "sections_dept":"cnto"
+      }
+    },
+    "OPTIONS": {
+      "COLUMNS": []
+    }
+  },
+  "errorExpected": true,
+  "expected": "InsightError"
+}
