@@ -46,7 +46,7 @@ export default class InsightFacade implements IInsightFacade {
 		if (!fs.existsSync(path.join(__dirname, `../../data/${id}.json`))) {
 			try {
 				const courseArray = await this.processCourses(content);
-				const memoryContent = await this.createCourseMapping(id, courseArray);
+				const memoryContent = this.createCourseMapping(id, courseArray);
 				const numRows = this.findnumRows(courseArray);
 				console.log(numRows);
 				if (memDataset.id == null && memDataset.content == null) {
@@ -77,35 +77,38 @@ export default class InsightFacade implements IInsightFacade {
 		return Promise.reject("Not implemented.");
 	}
 
-	private processCourses = async (zipFile: string) => {
-		const zip = await jsZip.loadAsync(zipFile, {base64: true});
-		let toBeProcessed: any[] = [];
-		let processed: object[] = [];
-		for (let filePath in zip.files) {
-			console.log(filePath);
-			// if (filePath.match(`courses\/[^\.].*`)) {
-			let file = zip.file(filePath);
-			if (file) {
-				file.async("string").then((fileString) => {
-					toBeProcessed.push(fileString);
-				}).catch((e) => {
-					throw new InsightError(e);
+	private processCourses = async (zipFile: string): Promise<any []> => {
+		let toBeProcessed: Array<Promise<any>> = [];
+		let processedFiles: any [] = [];
+		return new Promise((fullfill, reject) => {
+			jsZip.loadAsync(zipFile, {base64: true}).then((unzipped) => {
+				for (let filePath in unzipped.files) {
+					let file = unzipped.file(filePath);
+					if (file) {
+						toBeProcessed.push(file.async("string"));
+					}
+				}
+				Promise.all(toBeProcessed).then((processed) => {
+					for (let course of processed) {
+						let JSONCourse = JSON.parse(course);
+						processedFiles.push(JSONCourse);
+					}
+				})
+					.catch((e) => reject({message: e}))
+					.finally(() => {
+						fullfill(processedFiles);
+					});
+			})
+				.catch((e) => {
+					reject(e);
 				});
-			} else {
-				throw new InsightError("Dataset with provided ID already exists");
-			}
-			// }
-		}
-		for (let dataFile of toBeProcessed) {
-			// console.log(dataFile);
-			let jsonObject = JSON.parse(dataFile); // parse course if defined
-			// console.log(jsonObject);
-			processed.push(jsonObject);
-		}
-		return processed;
+		});
 	};
 
-	private createCourseMapping = async (id: string, processedCourses: any []) => {
+// if (filePath.match(`courses\/[^\.].*`)) {
+
+
+	private createCourseMapping = (id: string, processedCourses: any []) => {
 		const courses: any [] = [];
 		const validCourses = processedCourses.filter((obj) => obj.result.length > 0);
 		validCourses.forEach((section) => {
@@ -133,7 +136,7 @@ export default class InsightFacade implements IInsightFacade {
 		return courses;
 	  };
 
-	private saveToDisk = (fileID: string, proccessedData: any []) => {
+	private saveToDisk = (fileID: string, proccessedData: Course []) => {
 		const stringData = JSON.stringify(proccessedData);
 		fs.writeFileSync(path.join(__dirname, `../../data/${fileID}.json`), stringData);
 	  };
