@@ -37,31 +37,38 @@ interface Course {
  *
  */
 export default class InsightFacade implements IInsightFacade {
-	private addedDatasetID: any [] = [];
+	private addedDatasetID: string [] = [];
+	private memDataset = {} as MemoryDataSet;
 	constructor() {
 		console.log("InsightFacadeImpl::init()");
 	}
 
 	public addDataset = async (id: string, content: string, kind: InsightDatasetKind): Promise<string[]> => {
+		if (id.includes("_") || id === " ") {
+			throw new InsightError("Invalid ID");
+		}
 		if (!fs.existsSync(path.join(__dirname, `../../data/${id}.json`))) {
 			try {
 				const courseArray = await this.processCourses(content);
-				const memoryContent = this.createCourseMapping(id, courseArray);
 				const numRows = this.findnumRows(courseArray);
 				console.log(numRows);
+				const memoryContent = this.createCourseMapping(id, courseArray);
+				// const numRows = this.findnumRows(courseArray);
+				// console.log(numRows);
 				if (memDataset.id == null && memDataset.content == null) {
 				  memDataset.id = id;
 				  memDataset.content = memoryContent;
 				}
 				this.addedDatasetID.push(id);
-				return addedDataSet;
+				console.log(this.addedDatasetID);
+				return this.addedDatasetID;
 			  } catch (e) {
 				console.log(e);
-				throw new Error("Error saving dataset to disk");
+				throw new InsightError("Error saving dataset to disk");
 			  }
 		} else {
 			  console.log("error! Dataset already exists");
-			  throw new Error("dataset already exists");
+			  throw new InsightError("Dataset already exists");
 		}
 	};
 
@@ -106,7 +113,7 @@ export default class InsightFacade implements IInsightFacade {
 	};
 
 // if (filePath.match(`courses\/[^\.].*`)) {
-
+//
 
 	private createCourseMapping = (id: string, processedCourses: any []) => {
 		const courses: any [] = [];
@@ -132,13 +139,14 @@ export default class InsightFacade implements IInsightFacade {
 				courses.push(course);
 		  });
 		});
+		console.log(courses[0]);
 		this.saveToDisk(id, courses);
 		return courses;
 	  };
 
 	private saveToDisk = (fileID: string, proccessedData: Course []) => {
 		const stringData = JSON.stringify(proccessedData);
-		fs.writeFileSync(path.join(__dirname, `../../data/${fileID}.json`), stringData);
+		fs.outputFileSync(path.join(__dirname, `../../data/${fileID}.json`), stringData);
 	  };
 
 	private findnumRows = (proccessedData: any []) => {
