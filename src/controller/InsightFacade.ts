@@ -7,9 +7,7 @@ import {
 	NotFoundError
 } from "./IInsightFacade";
 
-import {processCourses, createCourseMapping} from "./processHelpers";
-
-import jsZip from "jszip";
+import {processCourses, createCourseMapping} from "./courseHelpers";
 import fs from "fs-extra";
 import path from "path";
 
@@ -61,8 +59,25 @@ export default class InsightFacade implements IInsightFacade {
 	};
 
 	public removeDataset(id: string): Promise<string> {
-		return Promise.reject("Not implemented.");
-	}
+		return new Promise((fullfill, reject) => {
+			if (id.includes("_") || id.trim().length === 0) {
+				reject(new InsightError("Invalid ID"));
+			}
+			if (!fs.existsSync(path.join(__dirname, `../../data/${id}.json`))) {
+				reject(new NotFoundError());
+			}
+			try {
+				console.log(this.addedDatasetID);
+				fs.removeSync(path.join(__dirname, `../../data/${id}.json`));
+				this.addedDatasetID = this.addedDatasetID.filter((e) => e !== id);
+				console.log(this.addedDatasetID);
+				fullfill("success");
+			} catch(e){
+				reject(e);
+			};
+		});
+	};
+
 
 	public performQuery(query: unknown): Promise<InsightResult[]> {
 		return Promise.reject("Not implemented.");
