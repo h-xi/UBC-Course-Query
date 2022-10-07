@@ -7,6 +7,8 @@ import {
 	NotFoundError
 } from "./IInsightFacade";
 
+import {processCourses, createCourseMapping} from "./processHelpers";
+
 import jsZip from "jszip";
 import fs from "fs-extra";
 import path from "path";
@@ -16,20 +18,6 @@ interface MemoryDataSet {
 	content: any []
 }
 const memDataset = {} as MemoryDataSet;
-const addedDataSet: string [] = [];
-
-interface Course {
-	dept: string,
-	id: string,
-	avg: number,
-	instructor: string,
-	title: string,
-	pass: number,
-	fail: number,
-	audit: string,
-	uuid: number,
-	year: number
-  }
 
 /**
  * This is the main programmatic entry point for the project.
@@ -46,11 +34,21 @@ export default class InsightFacade implements IInsightFacade {
 
 
 	public addDataset = async (id: string, content: string, kind: InsightDatasetKind): Promise<string[]> => {
-		if (id.includes("_") || id === " ") {
+		if (id.includes("_") || id.trim().length === 0) {
 			throw new InsightError("Invalid ID");
 		}
 		if (!fs.existsSync(path.join(__dirname, `../../data/${id}.json`))) {
 			try {
+				const courseArray = await processCourses(content);
+				const numRows = this.findnumRows(courseArray);
+				console.log(numRows);
+				const memoryContent = createCourseMapping(id, courseArray);
+				// const numRows = this.findnumRows(courseArray);
+				// console.log(numRows);
+				if (memDataset.id == null && memDataset.content == null) {
+				  memDataset.id = id;
+				  memDataset.content = memoryContent;
+				}
 				this.addedDatasetID.push(id);
 				console.log(this.addedDatasetID);
 				return this.addedDatasetID;
@@ -282,6 +280,18 @@ export default class InsightFacade implements IInsightFacade {
 	public listDatasets(): Promise<InsightDataset[]> {
 		return Promise.resolve([]);
 	}
+
+
+// if (filePath.match(`courses\/[^\.].*`)) {
+
+	private findnumRows = (proccessedData: any []) => {
+		let numRows = 0;
+		proccessedData.forEach((section: any) => {
+		  let result = section.result;
+		  numRows += result.length;
+		});
+		return numRows;
+	  };
 
 }
 
