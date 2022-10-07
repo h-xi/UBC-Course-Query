@@ -38,8 +38,6 @@ export default class InsightFacade implements IInsightFacade {
 		if (!fs.existsSync(path.join(__dirname, `../../data/${id}.json`))) {
 			try {
 				const courseArray = await processCourses(content);
-				const numRows = this.findnumRows(courseArray);
-				console.log(numRows);
 				const memoryContent = createCourseMapping(id, courseArray);
 				// const numRows = this.findnumRows(courseArray);
 				// console.log(numRows);
