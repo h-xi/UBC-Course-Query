@@ -71,7 +71,7 @@ export default class InsightFacade implements IInsightFacade {
 				fs.removeSync(path.join(__dirname, `../../data/${id}.json`));
 				this.addedDatasetID = this.addedDatasetID.filter((e) => e !== id);
 				console.log(this.addedDatasetID);
-				fullfill("success");
+				fullfill(id);
 			} catch(e){
 				reject(e);
 			};
