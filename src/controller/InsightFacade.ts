@@ -7,21 +7,62 @@ import {
 	NotFoundError
 } from "./IInsightFacade";
 
+import jsZip from "jszip";
+import fs from "fs-extra";
+import path from "path";
+
+interface MemoryDataSet {
+	id: string,
+	content: any []
+}
+const memDataset = {} as MemoryDataSet;
+const addedDataSet: string [] = [];
+
+interface Course {
+	dept: string,
+	id: string,
+	avg: number,
+	instructor: string,
+	title: string,
+	pass: number,
+	fail: number,
+	audit: string,
+	uuid: number,
+	year: number
+  }
+
 /**
  * This is the main programmatic entry point for the project.
  * Method documentation is in IInsightFacade
  *
  */
 export default class InsightFacade implements IInsightFacade {
-	private addedDatasetID: any [] = ["sections"];
+	private addedDatasetID: string [] = [];
+	private memDataset = {} as MemoryDataSet;
 
 	constructor() {
 		console.log("InsightFacadeImpl::init()");
 	}
 
-	public addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<string[]> {
-		return Promise.resolve([]);
-	}
+
+	public addDataset = async (id: string, content: string, kind: InsightDatasetKind): Promise<string[]> => {
+		if (id.includes("_") || id === " ") {
+			throw new InsightError("Invalid ID");
+		}
+		if (!fs.existsSync(path.join(__dirname, `../../data/${id}.json`))) {
+			try {
+				this.addedDatasetID.push(id);
+				console.log(this.addedDatasetID);
+				return this.addedDatasetID;
+			} catch (e) {
+				console.log(e);
+				throw new InsightError("Error saving dataset to disk");
+			}
+		} else {
+			console.log("error! Dataset already exists");
+			throw new InsightError("Dataset already exists");
+		}
+	};
 
 	public removeDataset(id: string): Promise<string> {
 		return Promise.resolve("");
@@ -241,4 +282,6 @@ export default class InsightFacade implements IInsightFacade {
 	public listDatasets(): Promise<InsightDataset[]> {
 		return Promise.resolve([]);
 	}
+
 }
+

@@ -133,7 +133,7 @@ describe("InsightFacade", function() {
 		});
 
 		it("should reject with InsightError if dataset id is only whitespace characters", function () {
-			const result = facade.addDataset("  ", sections, InsightDatasetKind.Sections);
+			const result = facade.addDataset(" ", sections, InsightDatasetKind.Sections);
 			return expect(result).eventually.to.be.rejectedWith(InsightError);
 		});
 
