@@ -1,0 +1,76 @@
+{
+  "title": "query with is and title",
+  "input": {
+    "WHERE": {
+      "IS": {
+        "sections_title": "software *"
+      }
+    },
+    "OPTIONS": {
+      "COLUMNS": [
+        "sections_dept",
+        "sections_instructor"
+      ],
+      "ORDER": "sections_instructor"
+    }
+  },
+  "errorExpected": false,
+  "expected": [
+    {
+      "sections_dept": "cpsc",
+      "sections_instructor": ""
+    },
+    {
+      "sections_dept": "cpsc",
+      "sections_instructor": ""
+    },
+    {
+      "sections_dept": "cpsc",
+      "sections_instructor": ""
+    },
+    {
+      "sections_dept": "cpsc",
+      "sections_instructor": ""
+    },
+    {
+      "sections_dept": "cpsc",
+      "sections_instructor": ""
+    },
+    {
+      "sections_dept": "cpsc",
+      "sections_instructor": ""
+    },
+    {
+      "sections_dept": "cpen",
+      "sections_instructor": ""
+    },
+    {
+      "sections_dept": "cpen",
+      "sections_instructor": ""
+    },
+    {
+      "sections_dept": "cpen",
+      "sections_instructor": "arefifar, seyed ali;botman, pieter;fels, s sidney;grecu, cristian sorin;kruchten, philippe;lee, terry;lusina, paul;madden, john;najarian, siamak;tang, shuo"
+    },
+    {
+      "sections_dept": "cpen",
+      "sections_instructor": "beznosov, konstantin"
+    },
+    {
+      "sections_dept": "cpsc",
+      "sections_instructor": "holmes, reid"
+    },
+    {
+      "sections_dept": "cpsc",
+      "sections_instructor": "wohlstadter, eric"
+    },
+    {
+      "sections_dept": "cpsc",
+      "sections_instructor": "wohlstadter, eric"
+    },
+    {
+      "sections_dept": "cpsc",
+      "sections_instructor": "wohlstadter, eric"
+    }
+  ]
+}

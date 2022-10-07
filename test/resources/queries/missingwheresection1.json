@@ -1,0 +1,17 @@
+{
+  "title": "query missing where section should reject with an InsightError1",
+  "input": {
+    "GT": {
+      "sections_dept": 95
+    },
+    "OPTIONS": {
+      "COLUMNS": [
+        "sections_dept",
+        "sections_avg"
+      ],
+      "ORDER": "sections_avg"
+    }
+  },
+  "errorExpected": true,
+  "expected": "InsightError"
+}

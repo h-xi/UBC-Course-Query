@@ -1,0 +1,19 @@
+{
+  "title": "query with query key cannot found in dataset should reject with an InsightError",
+  "input": {
+    "WHERE": {
+      "GT": {
+        "sections_haha": 96
+      }
+    },
+    "OPTIONS": {
+      "COLUMNS": [
+        "sections_hhh",
+        "sections_haha"
+      ],
+      "ORDER": "sections_avg"
+    }
+  },
+  "errorExpected": true,
+  "expected": "InsightError"
+}

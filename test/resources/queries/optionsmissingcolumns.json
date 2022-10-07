@@ -1,0 +1,17 @@
+{
+  "title": "query with options missing columns should reject with an InsightError",
+  "input": {
+    "WHERE": {
+      "GT": {
+        "sections_avg": 97
+      }
+    },
+    "OPTIONS": {
+      "GT": {
+        "sections_avg": 98
+      }
+    }
+  },
+  "errorExpected": true,
+  "expected": "InsightError"
+}

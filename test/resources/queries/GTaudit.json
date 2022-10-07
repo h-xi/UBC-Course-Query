@@ -1,0 +1,68 @@
+{
+  "title": "query with GT and audit",
+  "input": {
+    "WHERE": {
+      "GT": {
+        "sections_audit": 15
+      }
+    },
+    "OPTIONS": {
+      "COLUMNS": [
+        "sections_dept",
+        "sections_instructor"
+      ],
+      "ORDER": "sections_instructor"
+    }
+  },
+  "errorExpected": false,
+  "expected": [
+    {
+      "sections_dept": "rhsc",
+      "sections_instructor": ""
+    },
+    {
+      "sections_dept": "rhsc",
+      "sections_instructor": ""
+    },
+    {
+      "sections_dept": "rhsc",
+      "sections_instructor": ""
+    },
+    {
+      "sections_dept": "rhsc",
+      "sections_instructor": ""
+    },
+    {
+      "sections_dept": "rhsc",
+      "sections_instructor": ""
+    },
+    {
+      "sections_dept": "rhsc",
+      "sections_instructor": ""
+    },
+    {
+      "sections_dept": "rhsc",
+      "sections_instructor": ""
+    },
+    {
+      "sections_dept": "rhsc",
+      "sections_instructor": ""
+    },
+    {
+      "sections_dept": "frst",
+      "sections_instructor": ""
+    },
+    {
+      "sections_dept": "cpsc",
+      "sections_instructor": ""
+    },
+    {
+      "sections_dept": "frst",
+      "sections_instructor": "lemay, valerie;tait, david e n"
+    },
+    {
+      "sections_dept": "cpsc",
+      "sections_instructor": "schmidt, mark"
+    }
+  ]
+}

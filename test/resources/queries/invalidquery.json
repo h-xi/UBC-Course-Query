@@ -1,0 +1,6 @@
+{
+  "title": "query with invalid query format should reject with an InsightError",
+  "input": "WHERE",
+  "errorExpected": true,
+  "expected": "InsightError"
+}
