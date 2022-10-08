@@ -68,10 +68,9 @@ const processCourses = async (zipFile: string): Promise<any []> => {
 				.finally(() => {
 					fullfill(processedFiles);
 				});
-		})
-			.catch((e) => {
-				reject(e);
-			});
+		}).catch((e) => {
+			reject(e);
+		});
 	});
 };
 
