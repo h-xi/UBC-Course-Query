@@ -9,9 +9,7 @@ import {
 
 import {checkOptions} from "./checkOptionsHelper";
 import {checkWhere} from "./checkWhereHelpers";
-
-import jsZip from "jszip";
-import {processCourses, createCourseMapping, findNumRows} from "./courseHelpers";
+import {processCourses, createCourseMapping, findNumRows} from "./DatasetProcessHelpers";
 import fs from "fs-extra";
 import path from "path";
 
