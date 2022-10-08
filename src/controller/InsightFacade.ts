@@ -19,7 +19,7 @@ interface MemoryDataSet {
 	id: string,
 	content: any []
 }
-interface DatasetsAdded {
+interface DatasetAdded {
 	id: string,
 	kind: InsightDatasetKind,
 	numRows: number
@@ -32,7 +32,7 @@ interface DatasetsAdded {
  */
 export default class InsightFacade implements IInsightFacade {
 	private addedDatasetID: string [] = [];
-	private listOfAddedData: DatasetsAdded [] = [];
+	private listOfAddedData: DatasetAdded [] = [];
 	private memDataset = {} as MemoryDataSet;
 
 	constructor() {
@@ -134,7 +134,7 @@ export default class InsightFacade implements IInsightFacade {
 	}
 
 	private addIntoListOfAddedData = (id: string, numRows: number, kind: InsightDatasetKind) => {
-		const addedDataSet = {} as DatasetsAdded;
+		const addedDataSet = {} as DatasetAdded;
 		addedDataSet.id = id;
 		addedDataSet.numRows = numRows;
 		addedDataSet.kind = kind;
