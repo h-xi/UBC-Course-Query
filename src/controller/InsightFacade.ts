@@ -19,11 +19,6 @@ interface MemoryDataSet {
 	id: string,
 	content: any []
 }
-interface DatasetAdded {
-	id: string,
-	kind: InsightDatasetKind,
-	numRows: number
-}
 
 /**
  * This is the main programmatic entry point for the project.
@@ -32,7 +27,7 @@ interface DatasetAdded {
  */
 export default class InsightFacade implements IInsightFacade {
 	private addedDatasetID: string [] = [];
-	private listOfAddedData: DatasetAdded [] = [];
+	private listOfAddedData: InsightDataset [] = [];
 	private memDataset = {} as MemoryDataSet;
 
 	constructor() {
@@ -134,7 +129,7 @@ export default class InsightFacade implements IInsightFacade {
 	}
 
 	private addIntoListOfAddedData = (id: string, numRows: number, kind: InsightDatasetKind) => {
-		const addedDataSet = {} as DatasetAdded;
+		const addedDataSet = {} as InsightDataset;
 		addedDataSet.id = id;
 		addedDataSet.numRows = numRows;
 		addedDataSet.kind = kind;
