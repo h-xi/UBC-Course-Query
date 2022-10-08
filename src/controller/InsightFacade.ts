@@ -7,9 +7,7 @@ import {
 	NotFoundError
 } from "./IInsightFacade";
 
-import {processCourses, createCourseMapping} from "./processHelpers";
-
-import jsZip from "jszip";
+import {processCourses, createCourseMapping} from "./courseHelpers";
 import fs from "fs-extra";
 import path from "path";
 
@@ -40,8 +38,6 @@ export default class InsightFacade implements IInsightFacade {
 		if (!fs.existsSync(path.join(__dirname, `../../data/${id}.json`))) {
 			try {
 				const courseArray = await processCourses(content);
-				const numRows = this.findnumRows(courseArray);
-				console.log(numRows);
 				const memoryContent = createCourseMapping(id, courseArray);
 				// const numRows = this.findnumRows(courseArray);
 				// console.log(numRows);
@@ -63,8 +59,25 @@ export default class InsightFacade implements IInsightFacade {
 	};
 
 	public removeDataset(id: string): Promise<string> {
-		return Promise.resolve("");
-	}
+		return new Promise((fullfill, reject) => {
+			if (id.includes("_") || id.trim().length === 0) {
+				reject(new InsightError("Invalid ID"));
+			}
+			if (!fs.existsSync(path.join(__dirname, `../../data/${id}.json`))) {
+				reject(new NotFoundError());
+			}
+			try {
+				console.log(this.addedDatasetID);
+				fs.removeSync(path.join(__dirname, `../../data/${id}.json`));
+				this.addedDatasetID = this.addedDatasetID.filter((e) => e !== id);
+				console.log(this.addedDatasetID);
+				fullfill(id);
+			} catch(e){
+				reject(e);
+			};
+		});
+	};
+
 
 	public performQuery(query: unknown): Promise<InsightResult[]> {
 		if (this.isQueryValid(query)) {
@@ -280,18 +293,6 @@ export default class InsightFacade implements IInsightFacade {
 	public listDatasets(): Promise<InsightDataset[]> {
 		return Promise.resolve([]);
 	}
-
-
 // if (filePath.match(`courses\/[^\.].*`)) {
-
-	private findnumRows = (proccessedData: any []) => {
-		let numRows = 0;
-		proccessedData.forEach((section: any) => {
-		  let result = section.result;
-		  numRows += result.length;
-		});
-		return numRows;
-	  };
-
 }
 
