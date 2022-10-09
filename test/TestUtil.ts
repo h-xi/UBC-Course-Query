@@ -3,13 +3,13 @@
 
 import * as fs from "fs-extra";
 
-const persisDir = "./data";
+const persistDir = "./data";
 
 const getContentFromArchives = (name: string): string =>  // without {} no need to write "return"
 	fs.readFileSync("test/resources/archives/" + name).toString("base64");
 
 function clearDisk(): void {
-	fs.removeSync(persisDir);
+	fs.removeSync(persistDir);
 }
 
-export {getContentFromArchives, persisDir, clearDisk};
+export {getContentFromArchives, persistDir, clearDisk};
