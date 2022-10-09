@@ -7,8 +7,7 @@ import {
 	NotFoundError
 } from "./IInsightFacade";
 
-import {checkOptions} from "./checkOptionsHelper";
-import {checkWhere} from "./checkWhereHelpers";
+import {checkWhere,checkOptions} from "./queryHelpers";
 
 import jsZip from "jszip";
 import {processCourses, createCourseMapping} from "./courseHelpers";
