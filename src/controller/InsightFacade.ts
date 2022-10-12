@@ -7,10 +7,9 @@ import {
 	NotFoundError
 } from "./IInsightFacade";
 
-import {checkWhere,checkOptions} from "./queryHelpers";
 
-import jsZip from "jszip";
-import {processCourses, createCourseMapping} from "./courseHelpers";
+import {checkWhere,checkOptions} from "./queryHelpers";
+import {processCourses, createCourseMapping, findNumRows} from "./DatasetProcessHelpers";
 import fs from "fs-extra";
 import path from "path";
 
@@ -18,7 +17,6 @@ interface MemoryDataSet {
 	id: string,
 	content: any []
 }
-const memDataset = {} as MemoryDataSet;
 
 /**
  * This is the main programmatic entry point for the project.
@@ -27,12 +25,12 @@ const memDataset = {} as MemoryDataSet;
  */
 export default class InsightFacade implements IInsightFacade {
 	private addedDatasetID: string [] = [];
+	private listOfAddedData: InsightDataset [] = [];
 	private memDataset = {} as MemoryDataSet;
 
 	constructor() {
 		console.log("InsightFacadeImpl::init()");
 	}
-
 
 	public addDataset = async (id: string, content: string, kind: InsightDatasetKind): Promise<string[]> => {
 		if (id.includes("_") || id.trim().length === 0) {
@@ -42,14 +40,13 @@ export default class InsightFacade implements IInsightFacade {
 			try {
 				const courseArray = await processCourses(content);
 				const memoryContent = createCourseMapping(id, courseArray);
-				// const numRows = this.findnumRows(courseArray);
-				// console.log(numRows);
-				if (memDataset.id == null && memDataset.content == null) {
-				  memDataset.id = id;
-				  memDataset.content = memoryContent;
+				const numRows = findNumRows(courseArray);
+				this.addIntoListOfAddedData(id, numRows, kind);
+				if (this.memDataset.id == null && this.memDataset.content == null) {
+				  this.memDataset.id = id;
+				  this.memDataset.content = memoryContent;
 				}
 				this.addedDatasetID.push(id);
-				console.log(this.addedDatasetID);
 				return this.addedDatasetID;
 			} catch (e) {
 				console.log(e);
@@ -70,17 +67,14 @@ export default class InsightFacade implements IInsightFacade {
 				reject(new NotFoundError());
 			}
 			try {
-				console.log(this.addedDatasetID);
 				fs.removeSync(path.join(__dirname, `../../data/${id}.json`));
 				this.addedDatasetID = this.addedDatasetID.filter((e) => e !== id);
-				console.log(this.addedDatasetID);
 				fullfill(id);
 			} catch(e){
 				reject(e);
 			};
 		});
 	};
-
 
 	public performQuery(query: unknown): Promise<InsightResult[]> {
 		if (this.isQueryValid(query)) {
@@ -127,8 +121,17 @@ export default class InsightFacade implements IInsightFacade {
 	}
 
 	public listDatasets(): Promise<InsightDataset[]> {
-		return Promise.resolve([]);
+		return new Promise((fullfill) => {
+			fullfill(this.listOfAddedData);
+		});
 	}
 
+	private addIntoListOfAddedData = (id: string, numRows: number, kind: InsightDatasetKind) => {
+		const addedDataSet = {} as InsightDataset;
+		addedDataSet.id = id;
+		addedDataSet.numRows = numRows;
+		addedDataSet.kind = kind;
+		this.listOfAddedData.push(addedDataSet);
+	};
 }
 

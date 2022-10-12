@@ -6,11 +6,11 @@ import {
 	InsightResult,
 	NotFoundError, ResultTooLargeError
 } from "../../src/controller/IInsightFacade";
-import InsightFacade from "../../src/controller/InsightFacade";
 import chai, {expect} from "chai";
 import chaiAsPromised from "chai-as-promised";
 import {clearDisk, getContentFromArchives} from "../TestUtil";
 import {folderTest} from "@ubccpsc310/folder-test";
+import InsightFacade from "../../src/controller/InsightFacade";
 
 chai.use(chaiAsPromised);
 
@@ -219,8 +219,5 @@ describe("InsightFacade", function() {
 				}
 			}
 		);
-
 	});
-
-
 });

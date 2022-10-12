@@ -50,6 +50,9 @@ const processCourses = async (zipFile: string): Promise<any []> => {
 	return new Promise((fullfill, reject) => {
 		jsZip.loadAsync(zipFile, {base64: true}).then((unzipped) => {
 			for (let filePath in unzipped.files) {
+				if (!filePath.includes("courses/")) {
+					reject("invalid Dataset");
+				}
 				let file = unzipped.file(filePath);
 				if (file) {
 					toBeProcessed.push(file.async("string"));
@@ -65,16 +68,24 @@ const processCourses = async (zipFile: string): Promise<any []> => {
 				.finally(() => {
 					fullfill(processedFiles);
 				});
-		})
-			.catch((e) => {
-				reject(e);
-			});
+		}).catch((e) => {
+			reject(e);
+		});
 	});
 };
 
-const saveToDisk = (fileID: string, proccessedData: Course []) => {
-	const stringData = JSON.stringify(proccessedData);
+const saveToDisk = (fileID: string, processedData: Course []) => {
+	const stringData = JSON.stringify(processedData);
 	fs.outputFileSync(path.join(__dirname, `../../data/${fileID}.json`), stringData);
 };
 
-export {processCourses, createCourseMapping};
+const findNumRows = (processedData: any []) => {
+	let numRows = 0;
+	processedData.forEach((section) => {
+	  let result = section.result;
+	  numRows += result.length;
+	});
+	return numRows;
+};
+
+export {processCourses, createCourseMapping, findNumRows};
