@@ -133,5 +133,24 @@ export default class InsightFacade implements IInsightFacade {
 		addedDataSet.kind = kind;
 		this.listOfAddedData.push(addedDataSet);
 	};
-}
+
+	private loadDatasetIntoMemory = (id: string) => {
+		if (id === this.memDataset.id) {
+		  throw new InsightError("Dataset already loaded in Memory");
+		}
+		try {
+		  console.log(this.memDataset);
+		  const rawDataset = fs.readFileSync(path.join(__dirname, `../../${id}.json`), "utf-8");
+		  const dataSet = JSON.parse(rawDataset);
+		  console.log(dataSet);
+		  this.memDataset.id = id;
+		  this.memDataset.content = dataSet;
+		  console.log(this.memDataset);
+		  return this.memDataset;
+		}catch(e) {
+			console.log(e);
+			throw new InsightError("Error loading dataset into memory");
+		}
+	};
+};
 
