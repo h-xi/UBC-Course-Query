@@ -60,8 +60,12 @@ const processCourses = async (zipFile: string): Promise<any []> => {
 			}
 			Promise.all(toBeProcessed).then((processed) => {
 				for (let course of processed) {
-					let JSONCourse = JSON.parse(course);
-					processedFiles.push(JSONCourse);
+					try {
+						let JSONCourse = JSON.parse(course);
+						processedFiles.push(JSONCourse);
+					} catch(e) {
+						continue;
+					}
 				}
 			})
 				.catch((e) => reject({message: e}))
