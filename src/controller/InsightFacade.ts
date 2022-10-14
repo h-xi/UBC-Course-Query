@@ -26,7 +26,7 @@ interface MemoryDataSet {
 export default class InsightFacade implements IInsightFacade {
 	private addedDatasetID: string [] = [];
 	private listOfAddedData: InsightDataset [] = [];
-	private memDataset = {} as MemoryDataSet;
+	private memDataset: MemoryDataSet[] = [];
 
 	constructor() {
 		console.log("InsightFacadeImpl::init()");
@@ -42,10 +42,10 @@ export default class InsightFacade implements IInsightFacade {
 				const memoryContent = createCourseMapping(id, courseArray);
 				const numRows = findNumRows(courseArray);
 				this.addIntoListOfAddedData(id, numRows, kind);
-				if (this.memDataset.id == null && this.memDataset.content == null) {
-				  this.memDataset.id = id;
-				  this.memDataset.content = memoryContent;
-				}
+				const datasetMem = {} as MemoryDataSet;
+				datasetMem.id = id;
+				datasetMem.content = courseArray;
+				this.memDataset.push(datasetMem);
 				this.addedDatasetID.push(id);
 				return this.addedDatasetID;
 			} catch (e) {
@@ -69,6 +69,7 @@ export default class InsightFacade implements IInsightFacade {
 			try {
 				fs.removeSync(path.join(__dirname, `../../data/${id}.json`));
 				this.addedDatasetID = this.addedDatasetID.filter((e) => e !== id);
+				this.memDataset = this.memDataset.filter((o) => o.id !== id);
 				fullfill(id);
 			} catch(e){
 				reject(e);
@@ -134,23 +135,23 @@ export default class InsightFacade implements IInsightFacade {
 		this.listOfAddedData.push(addedDataSet);
 	};
 
-	private loadDatasetIntoMemory = (id: string) => {
-		if (id === this.memDataset.id) {
-		  throw new InsightError("Dataset already loaded in Memory");
-		}
-		try {
-		  console.log(this.memDataset);
-		  const rawDataset = fs.readFileSync(path.join(__dirname, `../../${id}.json`), "utf-8");
-		  const dataSet = JSON.parse(rawDataset);
-		  console.log(dataSet);
-		  this.memDataset.id = id;
-		  this.memDataset.content = dataSet;
-		  console.log(this.memDataset);
-		  return this.memDataset;
-		}catch(e) {
-			console.log(e);
-			throw new InsightError("Error loading dataset into memory");
-		}
-	};
+	// private loadDatasetIntoMemory = (id: string) => {
+	// 	if (id === this.memDataset.id) {
+	// 	  throw new InsightError("Dataset already loaded in Memory");
+	// 	}
+	// 	try {
+	// 	  console.log(this.memDataset);
+	// 	  const rawDataset = fs.readFileSync(path.join(__dirname, `../../${id}.json`), "utf-8");
+	// 	  const dataSet = JSON.parse(rawDataset);
+	// 	  console.log(dataSet);
+	// 	  this.memDataset.id = id;
+	// 	  this.memDataset.content = dataSet;
+	// 	  console.log(this.memDataset);
+	// 	  return this.memDataset;
+	// 	}catch(e) {
+	// 		console.log(e);
+	// 		throw new InsightError("Error loading dataset into memory");
+	// 	}
+	// };
 };
 
