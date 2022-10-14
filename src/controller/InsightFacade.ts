@@ -47,6 +47,7 @@ export default class InsightFacade implements IInsightFacade {
 				datasetMem.content = courseArray;
 				this.memDataset.push(datasetMem);
 				this.addedDatasetID.push(id);
+				console.log(this.memDataset);
 				return this.addedDatasetID;
 			} catch (e) {
 				console.log(e);
