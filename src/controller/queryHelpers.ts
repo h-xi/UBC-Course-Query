@@ -36,7 +36,7 @@ const checkFilter = (body: any, idArray: string []): boolean => {
 
 const checkLogic = (body: any, key: string, idArray: string []): boolean => {
 	if (!Array.isArray(body[key])) {
-		throw new InsightError("OR must be an array");
+		throw new InsightError("OR/AND must be an array");
 	}
 	let objectArray = body[key];
 	let counter: number = 0;

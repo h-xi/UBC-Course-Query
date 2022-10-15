@@ -74,7 +74,6 @@ export default class InsightFacade implements IInsightFacade {
 			} catch (e) {
 				reject(e);
 			}
-			;
 		});
 	};
 
