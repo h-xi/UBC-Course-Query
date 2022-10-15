@@ -12,6 +12,7 @@ import {checkWhere} from "./checkWhereHelpers";
 import {processCourses, createCourseMapping, findNumRows} from "./DatasetProcessHelpers";
 import fs from "fs-extra";
 import path from "path";
+import e from "express";
 
 interface MemoryDataSet {
 	id: string,
@@ -24,9 +25,9 @@ interface MemoryDataSet {
  *
  */
 export default class InsightFacade implements IInsightFacade {
-	private addedDatasetID: string [] = [];
-	private listOfAddedData: InsightDataset [] = [];
-	private memDataset = {} as MemoryDataSet;
+	private addedDatasetID: string[] = [];
+	private listOfAddedData: InsightDataset[] = [];
+	private memDataset: MemoryDataSet[] = [];
 
 	constructor() {
 		console.log("InsightFacadeImpl::init()");
@@ -42,14 +43,15 @@ export default class InsightFacade implements IInsightFacade {
 				const memoryContent = createCourseMapping(id, courseArray);
 				const numRows = findNumRows(courseArray);
 				this.addIntoListOfAddedData(id, numRows, kind);
-				if (this.memDataset.id == null && this.memDataset.content == null) {
-				  this.memDataset.id = id;
-				  this.memDataset.content = memoryContent;
-				}
+				const datasetMem = {} as MemoryDataSet;
+				datasetMem.id = id;
+				datasetMem.content = courseArray;
+				this.memDataset.push(datasetMem);
 				this.addedDatasetID.push(id);
+				console.log(this.memDataset);
 				return this.addedDatasetID;
-			} catch (e) {
-				console.log(e);
+			} catch (error) {
+				console.log(error);
 				throw new InsightError("Error saving dataset to disk");
 			}
 		} else {
@@ -68,10 +70,11 @@ export default class InsightFacade implements IInsightFacade {
 			}
 			try {
 				fs.removeSync(path.join(__dirname, `../../data/${id}.json`));
-				this.addedDatasetID = this.addedDatasetID.filter((e) => e !== id);
+				this.addedDatasetID = this.addedDatasetID.filter((dataID) => dataID !== id);
+				this.memDataset = this.memDataset.filter((o) => o.id !== id);
 				fullfill(id);
-			} catch(e){
-				reject(e);
+			} catch (error) {
+				reject(error);
 			};
 		});
 	};
@@ -85,7 +88,7 @@ export default class InsightFacade implements IInsightFacade {
 	}
 
 	private isQueryValid(query: any): boolean {   // can return dataset id here
-		let idStringArray: string [] = [];
+		let idStringArray: string[] = [];
 
 		if (Object.keys((query)).length !== 2) {
 			throw new InsightError("error: invalid structure of query");
@@ -104,7 +107,7 @@ export default class InsightFacade implements IInsightFacade {
 		return whereResult && optionsResult && datasetAccessResult;
 	}
 
-	private checkDatasetAccess(idArray: string []): boolean {
+	private checkDatasetAccess(idArray: string[]): boolean {
 		let counter: number = 0;
 		for (let s of idArray) {
 			if (!this.addedDatasetID.includes(s)) {
@@ -134,22 +137,19 @@ export default class InsightFacade implements IInsightFacade {
 		this.listOfAddedData.push(addedDataSet);
 	};
 
-	private loadDatasetIntoMemory = (id: string) => {
-		if (id === this.memDataset.id) {
-		  throw new InsightError("Dataset already loaded in Memory");
-		}
-		try {
-		  console.log(this.memDataset);
-		  const rawDataset = fs.readFileSync(path.join(__dirname, `../../${id}.json`), "utf-8");
-		  const dataSet = JSON.parse(rawDataset);
-		  console.log(dataSet);
-		  this.memDataset.id = id;
-		  this.memDataset.content = dataSet;
-		  console.log(this.memDataset);
-		  return this.memDataset;
-		}catch(e) {
-			console.log(e);
-			throw new InsightError("Error loading dataset into memory");
+	private retrieveDatasetInMemory = (id: string) => {
+		if (this.memDataset.some((o) => o.id === id)) {
+			try {
+				const retrieved = this.memDataset.find((o) => o.id === id);
+				if (retrieved) {
+					return retrieved;
+				}
+			} catch(error) {
+				console.log(error);
+				throw new NotFoundError("Dataset not found in Memory");
+			}
+		} else {
+			throw new NotFoundError("Dataset not in Memory");
 		}
 	};
 };
