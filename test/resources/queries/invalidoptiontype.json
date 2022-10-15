@@ -1,0 +1,13 @@
+{
+	"title": "invalid option type",
+	"input": {
+		"WHERE": {
+			"GT": {
+				"sections_avg": 97
+			}
+		},
+		"OPTIONS": 9
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+}
