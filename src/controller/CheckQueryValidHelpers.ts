@@ -1,12 +1,16 @@
 import {InsightError} from "./IInsightFacade";
 
-const checkWhere = (body: any, idArray: string []): boolean =>{
-	if (Object.keys(body).length === 0) {
-		return true;
-	} else if (Object.keys(body).length > 1) {
-		throw new InsightError("error: invalid WHERE structure");
+const checkWhere = (body: any, idArray: string []): boolean => {
+	if (typeof body === "object") {
+		if (Object.keys(body).length === 0) {
+			return true;
+		} else if (Object.keys(body).length > 1) {
+			throw new InsightError("error: invalid WHERE structure");
+		}
+		return checkFilter(body, idArray);
+	} else {
+		throw new InsightError("where must be object");
 	}
-	return checkFilter(body, idArray);
 };
 
 const checkFilter = (body: any, idArray: string []): boolean => {
@@ -31,14 +35,21 @@ const checkFilter = (body: any, idArray: string []): boolean => {
 };
 
 const checkLogic = (body: any, key: string, idArray: string []): boolean => {
+	if (!Array.isArray(body[key])) {
+		throw new InsightError("OR/AND must be an array");
+	}
 	let objectArray = body[key];
 	let counter: number = 0;
 	if (objectArray.length === 0) {
 		throw new InsightError("error: invalid logic key structure");
 	} else {
 		for (let i of objectArray) {
-			if (checkFilter(i, idArray)) {
-				counter++;
+			if (typeof i === "object") {
+				if (checkFilter(i, idArray)) {
+					counter++;
+				}
+			} else {
+				throw new InsightError("OR should be an object array");
 			}
 		}
 		return counter === objectArray.length;
@@ -111,10 +122,75 @@ const checkValidString = (value: unknown): boolean => {
 
 
 const checkNegation = (body: any, idArray: string []): boolean => {
+	if (typeof body !== "object") {
+		throw new InsightError("NOT must be an object");
+	}
 	if (Object.keys(body).length === 0 || Object.keys(body).length > 1) {
 		throw new InsightError("error: invalid structure in negation");
 	}
 	return checkFilter(body, idArray);
 };
 
-export {checkWhere};
+const checkOptions = (options: any, idArray: string []): boolean => {
+	let columnField: string[] = [];
+	checkOptionStructure(options);
+	for (let key in options) {
+		if (!(key === "COLUMNS" || key === "ORDER")) {
+			throw new InsightError("error: unexpected key in OPTIONS");
+		}
+		if (key === "COLUMNS") {
+			checkColumn(options);
+			const keys: any[] = options["COLUMNS"];
+			if (keys.length === 0) {
+				throw new InsightError("error: cannot have empty array for COLUMNS");
+			}
+			for (let k of keys) {
+				if (typeof k !== "string") {
+					throw new InsightError("error: unexpected key type in COLUMNS ");
+				}
+				const words = k.split("_");
+				if (words.length !== 2) {
+					throw new InsightError("error: invalid key:" + k);
+				}
+				idArray.push(words[0]);
+				const field = words[1];
+				if (!(field === "dept" || field === "id" || field === "instructor" || field === "title"
+					|| field === "uuid" || field === "avg" || field === "pass" || field === "fail"
+					|| field === "audit" || field === "year")) {
+					throw new InsightError("error: invalid field:" + field);
+				}
+				columnField.push(field);
+			}
+		}
+	}
+	if (Object.keys(options).length === 2) {
+		const orderKey = options["ORDER"];
+		if (typeof orderKey !== "string") {
+			throw new InsightError("error: invalid order key type");
+		}
+		const words = orderKey.split("_");
+		if (words.length !== 2) {
+			throw new InsightError("error: invalid order key:" + orderKey);
+		}
+		idArray.push(words[0]);
+		const orderField: string = words[1];
+		if (!columnField.includes(orderField)) {
+			throw new InsightError("error: order key not in COLUMNS");
+		}
+	}
+	return true;
+};
+
+const checkOptionStructure = (options: any) => {
+	if (Object.keys(options).length === 0 || Object.keys(options).length > 2) {
+		throw new InsightError("error: invalid structure in OPTIONS");
+	}
+};
+
+const checkColumn = (options: any) => {
+	if (!Array.isArray(options["COLUMNS"])) {
+		throw new InsightError("column should be an array");
+	}
+};
+
+export {checkWhere, checkOptions};

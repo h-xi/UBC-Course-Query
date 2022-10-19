@@ -1,0 +1,40 @@
+{
+	"title": "query sections including * at left",
+	"input": {
+		"WHERE": {
+			"IS": {
+				"sections_dept": "*nto"
+			}
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"sections_dept",
+				"sections_avg"
+			],
+			"ORDER": "sections_avg"
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"sections_dept": "cnto",
+			"sections_avg": 84.59
+		},
+		{
+			"sections_dept": "cnto",
+			"sections_avg": 84.6
+		},
+		{
+			"sections_dept": "cnto",
+			"sections_avg": 84.67
+		},
+		{
+			"sections_dept": "cnto",
+			"sections_avg": 89.38
+		},
+		{
+			"sections_dept": "cnto",
+			"sections_avg": 89.42
+		}
+	]
+}

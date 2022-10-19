@@ -4,12 +4,14 @@ import {
 	InsightDatasetKind,
 	InsightError,
 	InsightResult,
-	NotFoundError
+	NotFoundError,
+	ResultTooLargeError
 } from "./IInsightFacade";
 
-import {checkOptions} from "./checkOptionsHelper";
-import {checkWhere} from "./checkWhereHelpers";
-import {processCourses, createCourseMapping, findNumRows} from "./DatasetProcessHelpers";
+
+import {checkOptions, checkWhere} from "./CheckQueryValidHelpers";
+import {createCourseMapping, findNumRows, processCourses} from "./DatasetProcessHelpers";
+import {filterDataSet} from "./PerformQueryHelpers";
 import fs from "fs-extra";
 import path from "path";
 import e from "express";
@@ -28,6 +30,7 @@ export default class InsightFacade implements IInsightFacade {
 	private addedDatasetID: string[] = [];
 	private listOfAddedData: InsightDataset[] = [];
 	private memDataset: MemoryDataSet[] = [];
+  
 
 	constructor() {
 		console.log("InsightFacadeImpl::init()");
@@ -45,7 +48,7 @@ export default class InsightFacade implements IInsightFacade {
 				this.addIntoListOfAddedData(id, numRows, kind);
 				const datasetMem = {} as MemoryDataSet;
 				datasetMem.id = id;
-				datasetMem.content = courseArray;
+				datasetMem.content = memoryContent; 
 				this.memDataset.push(datasetMem);
 				this.addedDatasetID.push(id);
 				console.log(this.memDataset);
@@ -75,36 +78,136 @@ export default class InsightFacade implements IInsightFacade {
 				fullfill(id);
 			} catch (error) {
 				reject(error);
-			};
+			}
 		});
 	};
 
+	// public isQuery(query: unknown): query is object {
+	// 	return query !== null && query !== undefined && typeof query === "object" && !Array.isArray(query);
+	// }
+
 	public performQuery(query: unknown): Promise<InsightResult[]> {
-		if (this.isQueryValid(query)) {
-			return Promise.resolve([]);
-		} else {
-			throw new InsightError("error: invalid query");
-		}
+		return new Promise((fullfill, reject) => {
+			let queryDataSet: MemoryDataSet|undefined;
+			let id: string = "";
+			try {
+				id = this.isQueryValid(query);
+				queryDataSet = this.retrieveDatasetInMemory(id);
+			} catch (error) {
+				reject(error);
+			}
+			if (typeof queryDataSet === "undefined") {
+				reject (new InsightError("error when retrieved dataset"));
+			}
+			const queryContent = queryDataSet?.content;
+			if (typeof queryContent === "undefined") {
+				reject (new InsightError("empty content of retrieved dataset"));
+			}
+			const filter = (query as any)["WHERE"];
+			const options = (query as any)["OPTIONS"];
+			let filteredDataSet = filterDataSet(filter, queryContent);
+			if (filteredDataSet.length === 0) {
+				const zeroResult = [] as InsightResult[];
+				fullfill(zeroResult);
+			}
+			if (filteredDataSet.length > 5000) {
+				reject(new ResultTooLargeError("query result more than 5000 results"));
+			}
+			let columnsKey: string [] = this.getColumnsKey(options);  // eg: ["dept", "avg"]
+			let finalResult: InsightResult [] = this.getColumnsResult(filteredDataSet, columnsKey);
+			if (Object.keys(options).length === 2) {
+				finalResult = this.sortResult(finalResult, options["ORDER"]);
+			}
+			finalResult = this.renameKeyWithId(finalResult, id);
+			fullfill(finalResult);
+		});
 	}
 
-	private isQueryValid(query: any): boolean {   // can return dataset id here
-		let idStringArray: string[] = [];
-
-		if (Object.keys((query)).length !== 2) {
-			throw new InsightError("error: invalid structure of query");
-		}
-		for (let key in query) {
-			if (!(key === "WHERE" || key === "OPTIONS")) {
-				throw new InsightError("error: unexpected extra section");
+	private renameKeyWithId(finalResult: InsightResult [], id: string): InsightResult [] {
+		const newHalfID: string = id + "_";
+		for (let eachSection of finalResult) {
+			const oldKeyArray = Object.keys(eachSection);  // eg: ["avg", "dept"]
+			for (let eachOldKey of oldKeyArray) {
+				eachSection[newHalfID + eachOldKey] = eachSection[eachOldKey];
+				delete eachSection[eachOldKey];
 			}
 		}
-		if (!Object.keys((query)).includes("WHERE") || !Object.keys((query)).includes("OPTIONS")) {
-			throw new InsightError("error: miss where or options section");
+		return finalResult;
+	}
+
+	private sortResult(finalResult: InsightResult [], order: string): InsightResult []{
+		const orderKey: string = order.split("_")[1];  // eg: "avg"
+		if (orderKey === "avg" || orderKey === "pass" || orderKey === "fail" || orderKey === "audit" ||
+			orderKey === "year") {
+			finalResult.sort((a,b) => {
+				return (a as any)[orderKey] - (b as any)[orderKey];
+			});
+		} else {
+			finalResult.sort(function(a, b) {
+				if ((a as any)[orderKey] < (b as any)[orderKey]) {
+					return -1;
+				}
+				if ((a as any)[orderKey] > (b as any)[orderKey]) {
+					return 1;
+				}
+				return 0;
+			});
 		}
-		let whereResult: boolean = checkWhere(query.WHERE, idStringArray);
-		let optionsResult: boolean = checkOptions(query.OPTIONS, idStringArray);
-		let datasetAccessResult: boolean = this.checkDatasetAccess(idStringArray);
-		return whereResult && optionsResult && datasetAccessResult;
+		return finalResult;
+	}
+
+
+	private getColumnsResult(filteredDataSet: any[], columnsKey: string[]): InsightResult [] {
+		let result: InsightResult [] = [];
+		for (let eachSection of filteredDataSet) {
+			let temp: InsightResult = {};
+			for (let eachKey of columnsKey) {
+				temp[eachKey] = eachSection[eachKey];
+			}
+			result.push(temp);
+		}
+		return result;
+  }
+
+	private getColumnsKey(columns: any): string [] {
+		let returnKeys: string [] = [];
+		const columnKeys: string[] = columns["COLUMNS"];
+		for (let eachKey of columnKeys) {
+			let key = eachKey.split("_")[1];
+			returnKeys.push(key);
+		}
+		return returnKeys;
+	}
+
+	private isQueryValid(query: any): string {   // can return dataset id here
+		let idStringArray: string [] = [];
+
+		if (typeof query === "object") {
+			if (Object.keys((query)).length !== 2) {
+				throw new InsightError("error: invalid structure of query");
+			}
+
+			for (let key in query) {
+				if (!(key === "WHERE" || key === "OPTIONS")) {
+					throw new InsightError("error: unexpected extra section");
+				}
+			}
+			if (!Object.keys((query)).includes("WHERE") || !Object.keys((query)).includes("OPTIONS")) {
+				throw new InsightError("error: miss where or options section");
+			}
+			if (typeof query.OPTIONS !== "object") {
+				throw new InsightError("options must be object");
+			}
+			let whereResult: boolean = checkWhere(query.WHERE, idStringArray);
+			let optionsResult: boolean = checkOptions(query.OPTIONS, idStringArray);
+			let datasetAccessResult: boolean = this.checkDatasetAccess(idStringArray);
+			if (!(whereResult && optionsResult && datasetAccessResult) || idStringArray.length === 0) {
+				throw new InsightError("error: invalid query");
+			}
+			return idStringArray[0];
+		} else {
+			throw new InsightError("query must be object");
+		}
 	}
 
 	private checkDatasetAccess(idArray: string[]): boolean {
@@ -153,4 +256,3 @@ export default class InsightFacade implements IInsightFacade {
 		}
 	};
 };
-
