@@ -136,17 +136,6 @@ describe("InsightFacade", function() {
 			const result = facade.addDataset(" ", sections, InsightDatasetKind.Sections);
 			return expect(result).eventually.to.be.rejectedWith(InsightError);
 		});
-
-		it("should reject with InsightError if dataset is not valid", async function () {
-			let invalidContent = getContentFromArchives("invalidDataset.zip");
-			try {
-				await facade.addDataset("invalidDataset", invalidContent, InsightDatasetKind.Sections);
-				expect.fail("dataset is invalid");
-			} catch (err) {
-				expect(err).to.be.instanceof(InsightError);
-			}
-		});
-
 	});
 
 	describe("Remove Datasets", function() {

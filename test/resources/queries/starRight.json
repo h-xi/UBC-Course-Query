@@ -1,5 +1,5 @@
 {
-  "title": "query sections including *",
+  "title": "query sections including * at right",
   "input": {
     "WHERE": {
       "IS": {
