@@ -30,8 +30,6 @@ export default class InsightFacade implements IInsightFacade {
 	private addedDatasetID: string[] = [];
 	private listOfAddedData: InsightDataset[] = [];
 	private memDataset: MemoryDataSet[] = [];
-  
-
 	constructor() {
 		console.log("InsightFacadeImpl::init()");
 	}
@@ -48,7 +46,7 @@ export default class InsightFacade implements IInsightFacade {
 				this.addIntoListOfAddedData(id, numRows, kind);
 				const datasetMem = {} as MemoryDataSet;
 				datasetMem.id = id;
-				datasetMem.content = memoryContent; 
+				datasetMem.content = memoryContent;
 				this.memDataset.push(datasetMem);
 				this.addedDatasetID.push(id);
 				console.log(this.memDataset);
@@ -167,7 +165,7 @@ export default class InsightFacade implements IInsightFacade {
 			result.push(temp);
 		}
 		return result;
-  }
+	};
 
 	private getColumnsKey(columns: any): string [] {
 		let returnKeys: string [] = [];
@@ -240,19 +238,17 @@ export default class InsightFacade implements IInsightFacade {
 		this.listOfAddedData.push(addedDataSet);
 	};
 
-	private retrieveDatasetInMemory = (id: string) => {
-		if (this.memDataset.some((o) => o.id === id)) {
-			try {
-				const retrieved = this.memDataset.find((o) => o.id === id);
-				if (retrieved) {
-					return retrieved;
-				}
-			} catch(error) {
-				console.log(error);
-				throw new NotFoundError("Dataset not found in Memory");
+	private retrieveDatasetInMemory = (id: string): MemoryDataSet => {
+		try {
+			const retrieved = this.memDataset.find((o) => o.id === id);
+			if (retrieved) {
+				return retrieved;
+			}else {
+				throw new NotFoundError("Dataset not in Memory");
 			}
-		} else {
-			throw new NotFoundError("Dataset not in Memory");
+		} catch(error) {
+			console.log(error);
+			throw new NotFoundError("Dataset not found in Memory");
 		}
 	};
 };
