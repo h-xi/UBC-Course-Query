@@ -14,6 +14,7 @@ import {createCourseMapping, findNumRows, processCourses} from "./DatasetProcess
 import {filterDataSet} from "./PerformQueryHelpers";
 import fs from "fs-extra";
 import path from "path";
+import e from "express";
 
 interface MemoryDataSet {
 	id: string,
@@ -28,7 +29,8 @@ interface MemoryDataSet {
 export default class InsightFacade implements IInsightFacade {
 	private addedDatasetID: string[] = [];
 	private listOfAddedData: InsightDataset[] = [];
-	private memDataset: MemoryDataSet[] = []; // an array of MemoryDataSet Objects
+	private memDataset: MemoryDataSet[] = [];
+  
 
 	constructor() {
 		console.log("InsightFacadeImpl::init()");
@@ -46,7 +48,7 @@ export default class InsightFacade implements IInsightFacade {
 				this.addIntoListOfAddedData(id, numRows, kind);
 				const datasetMem = {} as MemoryDataSet;
 				datasetMem.id = id;
-				datasetMem.content = memoryContent; // ?
+				datasetMem.content = memoryContent; 
 				this.memDataset.push(datasetMem);
 				this.addedDatasetID.push(id);
 				console.log(this.memDataset);
@@ -154,6 +156,7 @@ export default class InsightFacade implements IInsightFacade {
 		return finalResult;
 	}
 
+
 	private getColumnsResult(filteredDataSet: any[], columnsKey: string[]): InsightResult [] {
 		let result: InsightResult [] = [];
 		for (let eachSection of filteredDataSet) {
@@ -164,7 +167,7 @@ export default class InsightFacade implements IInsightFacade {
 			result.push(temp);
 		}
 		return result;
-	}
+  }
 
 	private getColumnsKey(columns: any): string [] {
 		let returnKeys: string [] = [];
@@ -207,7 +210,7 @@ export default class InsightFacade implements IInsightFacade {
 		}
 	}
 
-	private checkDatasetAccess(idArray: string []): boolean {
+	private checkDatasetAccess(idArray: string[]): boolean {
 		let counter: number = 0;
 		for (let s of idArray) {
 			if (!this.addedDatasetID.includes(s)) {
@@ -237,7 +240,7 @@ export default class InsightFacade implements IInsightFacade {
 		this.listOfAddedData.push(addedDataSet);
 	};
 
-	private retrieveDatasetInMemory = (id: string) => {  // return a MemoryDataSet
+	private retrieveDatasetInMemory = (id: string) => {
 		if (this.memDataset.some((o) => o.id === id)) {
 			try {
 				const retrieved = this.memDataset.find((o) => o.id === id);
