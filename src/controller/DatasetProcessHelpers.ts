@@ -30,7 +30,7 @@ const createCourseMapping = (id: string, processedCourses: any []): Course [] =>
 			course.pass = result.Pass;
 			course.fail = result.Fail;
 			course.audit = result.Audit;
-			course.uuid = result.id;
+			course.uuid = result.id.toString();
 			if (result.Section === "overall") {
 				course.year = 1900;
 			} else {

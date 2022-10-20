@@ -81,13 +81,19 @@ const checkWildcards = (sectionString: string, filterString: string): boolean =>
 	if (sectionString === filterString) {
 		return true;
 	}
-	if (filterString[0] === "*") {
+	if (filterString[0] === "*" && filterString[filterString.length - 1] !== "*") {
 		filterString = filterString.substring(1, filterString.length);
+		return sectionString.endsWith(filterString);
 	}
-	if (filterString[filterString.length - 1] === "*") {
+	if (filterString[filterString.length - 1] === "*" && filterString[0] !== "*") {
 		filterString = filterString.substring(0, filterString.length - 1);
+		return sectionString.startsWith(filterString);
 	}
-	return sectionString.includes(filterString);
+	if (filterString[filterString.length - 1] === "*" && filterString[0] === "*"){
+		filterString = filterString.substring(1, filterString.length - 1);
+		return sectionString.includes(filterString);
+	}
+	return false;
 };
 
 const filterSComparison = (filter: any, dataset: any[]|undefined) => {
