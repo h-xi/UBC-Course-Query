@@ -1,0 +1,37 @@
+{
+	"title": "query empty group",
+	"input": {
+		"WHERE": {
+			"AND": [
+				{
+					"IS": {
+						"rooms_furniture": "*Tables*"
+					}
+				},
+				{
+					"GT": {
+						"rooms_seats": 300
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"rooms_shortname"
+			],
+			"ORDER": {
+				"keys": [
+					"rooms_shortname"
+				],
+				"dir": "DOWN"
+			}
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+			],
+			"APPLY": []
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+}

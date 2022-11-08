@@ -1,0 +1,153 @@
+{
+	"title": "query with room simple",
+	"input": {
+		"WHERE": {},
+		"OPTIONS": {
+			"COLUMNS": [
+				"rooms_address"
+			],
+			"ORDER": "rooms_address"
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+				"rooms_address"
+			],
+			"APPLY": []
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"rooms_address": "1822 East Mall"
+		},
+		{
+			"rooms_address": "1866 Main Mall"
+		},
+		{
+			"rooms_address": "1874 East Mall"
+		},
+		{
+			"rooms_address": "1924 West Mall"
+		},
+		{
+			"rooms_address": "1961 East Mall V6T 1Z1"
+		},
+		{
+			"rooms_address": "1984 Mathematics Road"
+		},
+		{
+			"rooms_address": "1984 West Mall"
+		},
+		{
+			"rooms_address": "1986 Mathematics Road"
+		},
+		{
+			"rooms_address": "2036 Main Mall"
+		},
+		{
+			"rooms_address": "2045 East Mall"
+		},
+		{
+			"rooms_address": "2053 Main Mall"
+		},
+		{
+			"rooms_address": "2080 West Mall"
+		},
+		{
+			"rooms_address": "2125 Main Mall"
+		},
+		{
+			"rooms_address": "2175 West Mall V6T 1Z4"
+		},
+		{
+			"rooms_address": "2177 Wesbrook Mall V6T 1Z3"
+		},
+		{
+			"rooms_address": "2194 Health Sciences Mall"
+		},
+		{
+			"rooms_address": "2202 Main Mall"
+		},
+		{
+			"rooms_address": "2205 East Mall"
+		},
+		{
+			"rooms_address": "2206 East Mall"
+		},
+		{
+			"rooms_address": "2207 Main Mall"
+		},
+		{
+			"rooms_address": "2260 West Mall, V6T 1Z4"
+		},
+		{
+			"rooms_address": "2350 Health Sciences Mall"
+		},
+		{
+			"rooms_address": "2356 Main Mall"
+		},
+		{
+			"rooms_address": "2357 Main Mall"
+		},
+		{
+			"rooms_address": "2360 East Mall V6T 1Z3"
+		},
+		{
+			"rooms_address": "2405 Wesbrook Mall"
+		},
+		{
+			"rooms_address": "2424 Main Mall"
+		},
+		{
+			"rooms_address": "6000 Iona Drive"
+		},
+		{
+			"rooms_address": "6000 Student Union Blvd"
+		},
+		{
+			"rooms_address": "6081 University Blvd"
+		},
+		{
+			"rooms_address": "6108 Thunderbird Boulevard"
+		},
+		{
+			"rooms_address": "6174 University Boulevard"
+		},
+		{
+			"rooms_address": "6224 Agricultural Road"
+		},
+		{
+			"rooms_address": "6245 Agronomy Road V6T 1Z4"
+		},
+		{
+			"rooms_address": "6250 Applied Science Lane"
+		},
+		{
+			"rooms_address": "6270 University Boulevard"
+		},
+		{
+			"rooms_address": "6303 North West Marine Drive"
+		},
+		{
+			"rooms_address": "6331 Crescent Road V6T 1Z1"
+		},
+		{
+			"rooms_address": "6333 Memorial Road"
+		},
+		{
+			"rooms_address": "6339 Stores Road"
+		},
+		{
+			"rooms_address": "6350 Stores Road"
+		},
+		{
+			"rooms_address": "6356 Agricultural Road"
+		},
+		{
+			"rooms_address": "6363 Agronomy Road"
+		},
+		{
+			"rooms_address": "6445 University Boulevard"
+		}
+	]
+}
