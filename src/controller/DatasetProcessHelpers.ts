@@ -14,7 +14,27 @@ interface Course {
 	audit: string,
 	uuid: number,
 	year: number
-  }
+}
+interface Rooms {
+	fullname: string,
+	shortname: string,
+	number: string,
+	name: string,
+	address: string,
+	lat: number
+	lon: number,
+	seats: number,
+	type: string,
+	furniture: string,
+	href: string
+};
+
+const createRoomMapping = (node: any) => {
+	let room = {} as Rooms;
+	getBuildingInfo(node, room);
+	// TODO: Call fns that retrieve information for object
+	return room;
+};
 
 const createCourseMapping = (id: string, processedCourses: any []): Course [] => {
 	const courses: any [] = [];
@@ -45,29 +65,23 @@ const createCourseMapping = (id: string, processedCourses: any []): Course [] =>
 	return courses;
 };
 
-const getBuildingName = (res: string [], node: any, nodeNameOne: string, nodeNameTwo: string) => {
-	if (!node.childNodes) {
-		return;
-	};
-	if (node.nodeName === nodeNameOne) {
-		for (let num in node.childNodes) {
-			if (node.childNodes[num].nodeName === nodeNameTwo) {
-				let filePath = node.childNodes[num].childNodes[9].childNodes[1].attrs[0].value.split("./");
-				res.push(filePath[1]);
-			}
-		}
-		return;
-	}
-	for (let num in node.childNodes) {
-		getBuildingName(res, node.childNodes[num], nodeNameOne, nodeNameTwo);
-	}
-};
-
 const processRooms = async (zipFile: string): Promise<any[]> => {
+	let toBeProcessed: Array<Promise<any>> = [];
 	return new Promise((fullfill, reject) => {
 		jsZip.loadAsync(zipFile, {base64: true}).then((unzipped) => {
 			findValidBuildings(unzipped).then((buildings) => {
-				console.log(buildings);
+				for (let num in buildings) {
+					let file = unzipped.file(buildings[num]);
+					if (file) {
+						toBeProcessed.push(file.async("string"));
+					}
+					Promise.all(toBeProcessed).then((processed) => {
+						for (let building of processed) {
+							let room = parse(building);
+							createRoomMapping(room);
+						}
+					});
+				}
 				// process all buildings in path into mapped data struct
 			});
 		});
@@ -122,18 +136,59 @@ const findNumRows = (processedData: any []) => {
 	return numRows;
 };
 
-const findValidBuildings = async (content: any) => {
-	const validBuildings: string[] = [];
-	try {
-		if ("index.htm" in content.files) {
-			const index = await content.file("index.htm").async("string");
-			const document = parse(index);
-			getBuildingName(validBuildings, document, "tbody", "tr");
-			console.log(validBuildings);
-			return validBuildings;
+const getBuildingName = (res: string [], node: any) => {
+	if (!node.childNodes) {
+		return;
+	};
+	if (node.nodeName === "tbody") {
+		for (let num in node.childNodes) {
+			if (node.childNodes[num].nodeName === "tr") {
+				let filePath = node.childNodes[num].childNodes[9].childNodes[1].attrs[0].value.split("./");
+				res.push(filePath[1]);
+			}
 		}
-	} catch (e) {
-		console.log(e);
+		return;
+	}
+	for (let num in node.childNodes) {
+		getBuildingName(res, node.childNodes[num]);
+	}
+};
+
+const findValidBuildings = async (content: any): Promise<string []> => {
+	const validBuildings: string[] = [];
+	return new Promise((fullfill, reject) => {
+		if ("index.htm" in content.files) {
+			content.file("index.htm").async("string").then((index: any) => {
+				const document = parse(index);
+				getBuildingName(validBuildings, document);
+				fullfill(validBuildings);
+			}).catch((e: any) => {
+				console.log(e);
+				reject(e);
+			});
+		}
+	});
+};
+
+const getBuildingInfo = (node: any, room: Rooms) => {
+	let content: any[] = [];
+	getNodeInfo(content, node, "field-content");
+	room.fullname = content[0].childNodes[0].value;
+	room.address = content[1].childNodes[0].value;
+
+};
+
+const getNodeInfo = (content: any [], node: any, nodeName: string) => {
+	if (!node.childNodes) {
+		return;
+	}
+	for (let num in node.attrs) {
+		if (node.attrs[num].value === nodeName) {
+			content.push(node);
+		}
+	}
+	for (let num in node.childNodes) {
+		getNodeInfo(content, node.childNodes[num], nodeName);
 	}
 };
 
