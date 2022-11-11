@@ -1,6 +1,7 @@
 import fs from "fs-extra";
 import path from "path";
 import jsZip from "jszip";
+import {parse} from "parse5";
 
 interface Course {
 	dept: string,
@@ -42,6 +43,35 @@ const createCourseMapping = (id: string, processedCourses: any []): Course [] =>
 	console.log(courses[0]);
 	saveToDisk(id, courses);
 	return courses;
+};
+
+const getBuildingName = (res: string [], node: any, nodeNameOne: string, nodeNameTwo: string) => {
+	if (!node.childNodes) {
+		return;
+	};
+	if (node.nodeName === nodeNameOne) {
+		for (let num in node.childNodes) {
+			if (node.childNodes[num].nodeName === nodeNameTwo) {
+				let filePath = node.childNodes[num].childNodes[9].childNodes[1].attrs[0].value.split("./");
+				res.push(filePath[1]);
+			}
+		}
+		return;
+	}
+	for (let num in node.childNodes) {
+		getBuildingName(res, node.childNodes[num], nodeNameOne, nodeNameTwo);
+	}
+};
+
+const processRooms = async (zipFile: string): Promise<any[]> => {
+	return new Promise((fullfill, reject) => {
+		jsZip.loadAsync(zipFile, {base64: true}).then((unzipped) => {
+			findValidBuildings(unzipped).then((buildings) => {
+				console.log(buildings);
+				// process all buildings in path into mapped data struct
+			});
+		});
+	});
 };
 
 const processCourses = async (zipFile: string): Promise<any []> => {
@@ -90,6 +120,21 @@ const findNumRows = (processedData: any []) => {
 	  numRows += result.length;
 	});
 	return numRows;
+};
+
+const findValidBuildings = async (content: any) => {
+	const validBuildings: string[] = [];
+	try {
+		if ("index.htm" in content.files) {
+			const index = await content.file("index.htm").async("string");
+			const document = parse(index);
+			getBuildingName(validBuildings, document, "tbody", "tr");
+			console.log(validBuildings);
+			return validBuildings;
+		}
+	} catch (e) {
+		console.log(e);
+	}
 };
 
 export {processCourses, createCourseMapping, findNumRows};
