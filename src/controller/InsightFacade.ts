@@ -9,8 +9,9 @@ import {
 } from "./IInsightFacade";
 
 
-import {checkOptions, checkWhere} from "./CheckQueryValidHelpers";
+import {checkOptions, checkWhere, isMKey, isSKey} from "./CheckQueryValidHelpers";
 import {createCourseMapping, findNumRows, processCourses} from "./DatasetProcessHelpers";
+import {checkAllKeysType, checkTransform, checkStrucValidWithNoTras} from "./CheckValidTransformationHelper";
 import {filterDataSet} from "./PerformQueryHelpers";
 import fs from "fs-extra";
 import path from "path";
@@ -178,28 +179,42 @@ export default class InsightFacade implements IInsightFacade {
 	}
 
 	private isQueryValid(query: any): string {   // can return dataset id here
-		let idStringArray: string [] = [];
+		let idStringArray: string [] = [];  // check access dataset id is correct later
+		let allKeys: string[] = [];   // check all keys belong to one dataset type
+		let transformKeys: string[] = [];  // check columns keys if this is not empty
+		let transformResult: boolean = true;
 
 		if (typeof query === "object") {
-			if (Object.keys((query)).length !== 2) {
+			if (!(Object.keys((query)).length === 3 || Object.keys((query)).length === 2)) {
 				throw new InsightError("error: invalid structure of query");
 			}
-
-			for (let key in query) {
-				if (!(key === "WHERE" || key === "OPTIONS")) {
-					throw new InsightError("error: unexpected extra section");
+			if (Object.keys((query)).length === 2) {
+				checkStrucValidWithNoTras(query);
+			}
+			if (Object.keys((query)).length === 3) {
+				for (let key in query) {
+					if (!(key === "WHERE" || key === "OPTIONS" || key === "TRANSFORMATIONS")) {
+						throw new InsightError("error: unexpected extra section");
+					}
 				}
+				if (!Object.keys((query)).includes("WHERE") || !Object.keys((query)).includes("OPTIONS")
+					|| !Object.keys((query)).includes("TRANSFORMATIONS")) {
+					throw new InsightError("error: miss where or options section");
+				}
+				if (typeof query.OPTIONS !== "object") {
+					throw new InsightError("options must be object");
+				}
+				if (typeof query.TRANSFORMATIONS !== "object") {
+					throw new InsightError("transformations must be object");
+				}
+				transformResult = checkTransform(query.TRANSFORMATIONS, idStringArray, allKeys, transformKeys);
 			}
-			if (!Object.keys((query)).includes("WHERE") || !Object.keys((query)).includes("OPTIONS")) {
-				throw new InsightError("error: miss where or options section");
-			}
-			if (typeof query.OPTIONS !== "object") {
-				throw new InsightError("options must be object");
-			}
-			let whereResult: boolean = checkWhere(query.WHERE, idStringArray);
-			let optionsResult: boolean = checkOptions(query.OPTIONS, idStringArray);
+			let whereResult: boolean = checkWhere(query.WHERE, idStringArray, allKeys);
+			let optionsResult: boolean = checkOptions(query.OPTIONS, idStringArray, allKeys, transformKeys);
 			let datasetAccessResult: boolean = this.checkDatasetAccess(idStringArray);
-			if (!(whereResult && optionsResult && datasetAccessResult) || idStringArray.length === 0) {
+			let allKeysResult: boolean = checkAllKeysType(allKeys);
+			if (!(whereResult && optionsResult && datasetAccessResult && allKeysResult && transformResult)
+				|| idStringArray.length === 0) {
 				throw new InsightError("error: invalid query");
 			}
 			return idStringArray[0];

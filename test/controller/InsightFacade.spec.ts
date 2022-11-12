@@ -182,7 +182,7 @@ describe("InsightFacade", function() {
 			clearDisk();
 			facade = new InsightFacade();
 			await facade.addDataset("sections", sections, InsightDatasetKind.Sections);
-			await facade.addDataset("rooms", rooms, InsightDatasetKind.Rooms);
+			// await facade.addDataset("rooms", rooms, InsightDatasetKind.Rooms);
 		});
 
 		function assertResult(actual: any, expected: InsightResult[], input: unknown): void {
