@@ -21,14 +21,16 @@ type Error = "InsightError" | "ResultTooLargeError";
 // Code of test of listDatasets is from video "Mutant killing demo" from link attached in
 // 2022 WT1 CPSC310 piazza:https://piazza.com/class/l7qenrnq7oy512/post/11
 
-describe("InsightFacade", function() {
+describe("InsightFacade", function () {
 	let sections: string;
+	let rooms: string;
 
 	before(function () {
 		sections = getContentFromArchives("pair.zip");
+		rooms = getContentFromArchives("rooms.zip");
 	});  // the content of the test dataset to add
 
-	describe("List Datasets", function() {
+	describe("List Datasets", function () {
 		let facade: IInsightFacade;
 
 		beforeEach(function () {
@@ -100,7 +102,7 @@ describe("InsightFacade", function() {
 		});
 	});
 
-	describe("Add Datasets", function() {
+	describe("Add Datasets", function () {
 		let facade: IInsightFacade;
 
 		beforeEach(function () {
@@ -108,7 +110,16 @@ describe("InsightFacade", function() {
 			facade = new InsightFacade();
 		});
 
-		it("should add one dataset", function () {
+		it("should add one room dataset", function () {
+			return facade.addDataset("rooms", rooms, InsightDatasetKind.Rooms)
+				.then((ids) => {
+					expect(ids).to.be.an.instanceof(Array);
+					expect(ids).to.have.length(1);
+					expect(ids).to.deep.equal(["rooms"]);
+				});
+		});
+
+		it("should add one course dataset", function () {
 			return facade.addDataset("sections", sections, InsightDatasetKind.Sections)
 				.then((ids) => {
 					expect(ids).to.be.an.instanceof(Array);
@@ -138,39 +149,38 @@ describe("InsightFacade", function() {
 		});
 	});
 
-	describe("Remove Datasets", function() {
+	describe("Remove Datasets", function () {
 		let facade: IInsightFacade;
 
-		beforeEach(function () {
-			clearDisk();
-			facade = new InsightFacade();
-		});
+ 		beforeEach(function () {
+ 			clearDisk();
+ 			facade = new InsightFacade();
+ 		});
 
-		it("should remove one dataset", function () {
-			return facade.addDataset("sections", sections, InsightDatasetKind.Sections)
-				.then((ids) => {
-					return facade.removeDataset("sections");
-				})
-				.then((removeId) => {
-					expect(removeId).to.be.deep.equal("sections");
-				});
-		});
+ 		it("should remove one dataset", function () {
+ 			return facade.addDataset("sections", sections, InsightDatasetKind.Sections)
+ 				.then((ids) => {
+ 					return facade.removeDataset("sections");
+ 				})
+ 				.then((removeId) => {
+ 					expect(removeId).to.be.deep.equal("sections");
+ 				});
+ 		});
 
-		it("should reject with NotFoundError if try to remove a dataset hasn't been added yet", function () {
-			const result = facade.removeDataset("sections");
-			return expect(result).eventually.to.be.rejectedWith(NotFoundError);
-		});
+ 		it("should reject with NotFoundError if try to remove a dataset hasn't been added yet", function () {
+ 			const result = facade.removeDataset("sections");
+ 			return expect(result).eventually.to.be.rejectedWith(NotFoundError);
+ 	});
 
-		it("should reject with InsightError if remove dataset id contains an underscore", function () {
-			const result = facade.removeDataset("sections_");
+ 		it("should reject with InsightError if remove dataset id contains an underscore", function () {
+ 			const result = facade.removeDataset("sections_");
+ 			return expect(result).eventually.to.be.rejectedWith(InsightError);
+ 		});
+
+ 		it("should reject with InsightError if remove dataset id is only whitespace characters", function () {
+ 			const result = facade.removeDataset("  ");
 			return expect(result).eventually.to.be.rejectedWith(InsightError);
 		});
-
-		it("should reject with InsightError if remove dataset id is only whitespace characters", function () {
-			const result = facade.removeDataset("  ");
-			return expect(result).eventually.to.be.rejectedWith(InsightError);
-		});
-
 	});
 
 	describe("Dynamic folder test", function () {

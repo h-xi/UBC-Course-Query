@@ -57,7 +57,6 @@ export default class InsightFacade implements IInsightFacade {
 				this.addIntoListOfAddedData(id, numRows, kind);
 				this.memDataset.push(datasetMem);
 				this.addedDatasetID.push(id);
-				console.log(this.memDataset);
 				return this.addedDatasetID;
 			} catch (error) {
 				console.log(error);

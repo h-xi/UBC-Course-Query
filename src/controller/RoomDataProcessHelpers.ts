@@ -57,8 +57,12 @@ const processRooms = async (zipFile: string): Promise<any[]> => {
 				}
 				Promise.all(validBuildings).then(() => {
 					fulfill(roomsObjectList);
+				}).catch((e) => {
+					console.log(e);
+					reject(e);
 				});
 			}).catch((e) => {
+				console.log(e);
 				reject(e);
 			});
    	 });
@@ -129,7 +133,8 @@ const createRoomMapping = async (node: Document, roomsObjectList: any, buildingS
 	let roomType: string[] = [];
   	let roomLinks: string[] = [];
   	const table = findRoomTable(node);
-  	let building = await getBuildingInfo(node, buildingShortName);
+	let building = await getBuildingInfo(node, buildingShortName);
+
   	getRoomNumbers(table, roomNum);
   	getRoomInfo(
     	table,
@@ -164,6 +169,7 @@ const getBuildingInfo = async (node: any, buildingShortName: string) => {
 	building.address = content[1].childNodes[0].value;
 	building.lat = coordinates.lat;
 	building.lon = coordinates.lon;
+	return building;
 };
 
 const getBuildingCoordinates = async (address: string) => {
