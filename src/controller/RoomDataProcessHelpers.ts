@@ -30,45 +30,41 @@ interface Buildings {
 const processRooms = async (zipFile: string): Promise<any[]> => {
 	let roomsObjectList: Rooms[] = [];
 	let toBeProcessed: Array<Promise<any>> = [];
-  	let validBuildings: Array<Promise<any>> = [];
-  	return new Promise((fullfill, reject) => {
-   	 jsZip.loadAsync(zipFile, {base64: true}).then((unzipped) => {
-   	   findValidBuildings(unzipped)
-   	     .then((buildings) => {
-          // console.log(buildings);
- 	         for (let num in buildings) {
-				   let file = unzipped.file(buildings[num][0]);
-				   if (file) {
-					   toBeProcessed.push(file.async("string"));
-				   }
-        	  }
-     	     Promise.all(toBeProcessed)
-       	     .then((processed) => {
-       	       for (let num in processed) {
-       	         let building = parse(processed[num]);
-       	         if (doesBuildingHaveRoom(building)) {
-       	           validBuildings.push(
-							 createRoomMapping(building, roomsObjectList, buildings[num][1]));
-						 }
-					 }
-          	    Promise.all(validBuildings)
-        	        .then(() => {
-            	      console.log(roomsObjectList);
-                	  fullfill(roomsObjectList);
-               	 })
-               	 .catch((e) => {
-               	   reject(e);
-               	 });
-       	     })
-       	     .catch((e) => {
-       	       reject(e);
-       	     });
-       	 })
-      	  .catch((e) => {
-        	  reject(e);
-       	 });
+	let validBuildings: Array<Promise<any>> = [];
+	try {
+		const index = await jsZip.loadAsync(zipFile, {base64: true});
+		const buildingDirectory = await findValidBuildings(index);
+
+		for (let num in buildingDirectory) {
+			let file = index.file(buildingDirectory[num][0]);
+			if (file) {
+				toBeProcessed.push(file.async("string"));
+			}
+		}
+		return new Promise((fulfill, reject) => {
+			Promise.all(toBeProcessed).then((processed) => {
+				for (let num in processed) {
+					let building = parse(processed[num]);
+					if (doesBuildingHaveRoom(building)) {
+						validBuildings.push(
+							createRoomMapping(
+								building,
+								roomsObjectList,
+								buildingDirectory[num][1]
+							)
+						);
+					}
+				}
+				Promise.all(validBuildings).then(() => {
+					fulfill(roomsObjectList);
+				});
+			}).catch((e) => {
+				reject(e);
+			});
    	 });
- 	 });
+ 	 } catch (e) {
+   	 throw new Error();
+ 	 }
 };
 const findValidBuildings = async (content: any): Promise<string [][]> => {
 	const validBuildings: string[][] = [];
