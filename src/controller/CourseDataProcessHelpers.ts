@@ -1,6 +1,7 @@
 import fs from "fs-extra";
 import path from "path";
 import jsZip from "jszip";
+import {parse} from "parse5";
 
 interface Course {
 	dept: string,
@@ -13,7 +14,8 @@ interface Course {
 	audit: string,
 	uuid: number,
 	year: number
-  }
+}
+
 
 const createCourseMapping = (id: string, processedCourses: any []): Course [] => {
 	const courses: any [] = [];

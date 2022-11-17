@@ -44,14 +44,14 @@ const checkAllKeysType = (allKeys: string []): boolean => {
 	let counter: number = 0;
 	if (isSectionField(allKeys[0])) {
 		for (let k of allKeys) {
-			if (isSectionField(k)) {
+			if (!isRoomField(k)) {
 				counter++;
 			}
 		}
 		return counter === allKeys.length;
 	} else {
 		for (let k of allKeys) {
-			if (isRoomField(k)) {
+			if (!isSectionField(k)) {
 				counter++;
 			}
 		}
@@ -66,7 +66,8 @@ const isSectionField = (field: string): boolean => {
 
 const isRoomField = (field: string): boolean => {
 	return field === "lat" || field === "lon" || field === "seats" || field === "fullname" || field === "shortname"
-		|| field === "type" || field === "furniture" || field === "href";
+		|| field === "type" || field === "furniture" || field === "href" || field === "number" || field === "name"
+		|| field === "address";
 };
 
 const checkGroup = (group: any, idArray: string[], allKeys: string[], transformKeys: string[]): boolean => {

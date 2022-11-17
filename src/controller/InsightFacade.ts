@@ -10,13 +10,13 @@ import {
 
 
 import {checkOptions, checkWhere} from "./CheckQueryValidHelpers";
-import {createCourseMapping, findNumRows, processCourses} from "./DatasetProcessHelpers";
-import {checkAllKeysType, checkStrucValid, isRoomField, isSectionField} from "./CheckValidTransformationHelper";
+import {checkAllKeysType, checkStrucValid, isSectionField} from "./CheckValidTransformationHelper";
+import {createCourseMapping, findNumRows, processCourses} from "./CourseDataProcessHelpers";
 import {filterDataSet} from "./PerformQueryHelpers";
 import {getColumnsKey, transformData, getColumnsResult, sortResult, renameKeyWithId} from "./TransformationHelper";
 import fs from "fs-extra";
 import path from "path";
-import Decimal from "decimal.js";
+import {processRooms} from "./RoomDataProcessHelpers";
 
 interface MemoryDataSet {
 	id: string,
@@ -42,16 +42,23 @@ export default class InsightFacade implements IInsightFacade {
 		}
 		if (!fs.existsSync(path.join(__dirname, `../../data/${id}.json`))) {
 			try {
-				const courseArray = await processCourses(content);
-				const memoryContent = createCourseMapping(id, courseArray);
-				const numRows = findNumRows(courseArray);
+				let numRows: number;
+				let datasetMem = {} as MemoryDataSet;
+				if (kind === InsightDatasetKind.Sections) {
+					const courseArray = await processCourses(content);
+					const memoryContent = createCourseMapping(id, courseArray);
+					numRows = findNumRows(courseArray);
+					datasetMem.id = id;
+					datasetMem.content = memoryContent;
+				} else {
+					const roomsArray = await processRooms(content);
+					numRows = roomsArray.length;
+					datasetMem.id = id;
+					datasetMem.content = roomsArray;
+				}
 				this.addIntoListOfAddedData(id, numRows, kind);
-				const datasetMem = {} as MemoryDataSet;
-				datasetMem.id = id;
-				datasetMem.content = memoryContent;
 				this.memDataset.push(datasetMem);
 				this.addedDatasetID.push(id);
-				console.log(this.memDataset);
 				return this.addedDatasetID;
 			} catch (error) {
 				console.log(error);

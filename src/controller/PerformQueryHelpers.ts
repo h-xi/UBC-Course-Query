@@ -15,7 +15,11 @@ const filterDataSet = (filter: any, dataSet: any[]|undefined): any[] => {
 	if (key === "NOT") {
 		return filterNot(filter, dataSet);
 	}
-	return [];
+	if (typeof dataSet !== "undefined") {
+		return dataSet;
+	} else {
+		return [];
+	}
 };
 
 const filterNot = (filter: any, dataSet: any[]|undefined): any[] => {
