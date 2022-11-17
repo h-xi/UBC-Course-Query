@@ -1,0 +1,45 @@
+{
+	"title": "query with unmatched dataset ID and keys",
+	"input": {
+		"WHERE": {
+			"AND": [
+				{
+					"IS": {
+						"sections_furniture": "*Tables*"
+					}
+				},
+				{
+					"GT": {
+						"sections_seats": 300
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"sections_shortname",
+				"maxSeats"
+			],
+			"ORDER": {
+				"dir": "DOWN",
+				"keys": [
+					"maxSeats"
+				]
+			}
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+				"sections_shortname"
+			],
+			"APPLY": [
+				{
+					"maxSeats": {
+						"MAX": "sections_seats"
+					}
+				}
+			]
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+}

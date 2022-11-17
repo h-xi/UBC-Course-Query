@@ -1,18 +1,43 @@
 import {InsightError} from "./IInsightFacade";
 import {isMKey, isSKey} from "./CheckQueryValidHelpers";
 
-const checkStrucValidWithNoTras = (query: any) => {
-	for (let key in query) {
-		if (!(key === "WHERE" || key === "OPTIONS")) {
-			throw new InsightError("error: unexpected extra section");
+const checkStrucValid = (query: any, idStringArray: string[], allKeys: string[],
+						 transformKeys: string[], transformResult: boolean): boolean => {
+	if (!(Object.keys((query)).length === 3 || Object.keys((query)).length === 2)) {
+		throw new InsightError("error: invalid structure of query");
+	}
+	if (Object.keys((query)).length === 2) {
+		for (let key in query) {
+			if (!(key === "WHERE" || key === "OPTIONS")) {
+				throw new InsightError("error: unexpected extra section");
+			}
+		}
+		if (!Object.keys((query)).includes("WHERE") || !Object.keys((query)).includes("OPTIONS")) {
+			throw new InsightError("error: miss where or options section");
+		}
+		if (typeof query.OPTIONS !== "object") {
+			throw new InsightError("options must be object");
 		}
 	}
-	if (!Object.keys((query)).includes("WHERE") || !Object.keys((query)).includes("OPTIONS")) {
-		throw new InsightError("error: miss where or options section");
+	if (Object.keys((query)).length === 3) {
+		for (let key in query) {
+			if (!(key === "WHERE" || key === "OPTIONS" || key === "TRANSFORMATIONS")) {
+				throw new InsightError("error: unexpected extra section");
+			}
+		}
+		if (!Object.keys((query)).includes("WHERE") || !Object.keys((query)).includes("OPTIONS")
+			|| !Object.keys((query)).includes("TRANSFORMATIONS")) {
+			throw new InsightError("error: miss where or options section");
+		}
+		if (typeof query.OPTIONS !== "object") {
+			throw new InsightError("options must be object");
+		}
+		if (typeof query.TRANSFORMATIONS !== "object") {
+			throw new InsightError("transformations must be object");
+		}
+		transformResult = checkTransform(query.TRANSFORMATIONS, idStringArray, allKeys, transformKeys);
 	}
-	if (typeof query.OPTIONS !== "object") {
-		throw new InsightError("options must be object");
-	}
+	return transformResult;
 };
 
 const checkAllKeysType = (allKeys: string []): boolean => {
@@ -138,6 +163,7 @@ const checkApplyRule = (applyRule: any, applyKeysArray: string [], idArray: stri
 	return true;
 };
 
-export {checkStrucValidWithNoTras, checkTransform, checkAllKeysType};
+
+export {checkStrucValid, checkTransform, checkAllKeysType, isRoomField, isSectionField};
 
 

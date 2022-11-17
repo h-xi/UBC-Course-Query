@@ -96,44 +96,24 @@ const checkWildcards = (sectionString: string, filterString: string): boolean =>
 	return false;
 };
 
+const SPushHelper = (sField: string, dataset: any[], filterString: string, filteredArray: any []): any [] => {
+	for (let section of dataset) {
+		if (checkWildcards(section[sField], filterString)) {
+			filteredArray.push(section);
+		}
+	}
+	return filteredArray;
+};
+
+
 const filterSComparison = (filter: any, dataset: any[]|undefined) => {
-	let filteredISArray = [];
+	let filteredISArray: any[] = [];
 	let sKey = filter["IS"];
 	let idAndSField = Object.keys(sKey)[0];
 	let filterString: string = sKey[idAndSField];
 	let sField = idAndSField.split("_")[1]; // eg: "dept"
 	if (typeof dataset !== "undefined") {
-		if (sField === "dept") {
-			for (let section of dataset) {
-				if (checkWildcards(section["dept"], filterString)) {
-					filteredISArray.push(section);
-				}
-			}
-		} else if (sField === "id") {
-			for (let section of dataset) {
-				if (checkWildcards(section["id"], filterString)) {
-					filteredISArray.push(section);
-				}
-			}
-		} else if (sField === "instructor") {
-			for (let section of dataset) {
-				if (checkWildcards(section["instructor"], filterString)) {
-					filteredISArray.push(section);
-				}
-			}
-		} else if (sField === "title") {
-			for (let section of dataset) {
-				if (checkWildcards(section["title"], filterString)) {
-					filteredISArray.push(section);
-				}
-			}
-		} else if (sField === "uuid") {
-			for (let section of dataset) {
-				if (checkWildcards(section["uuid"], filterString)) {
-					filteredISArray.push(section);
-				}
-			}
-		}
+		filteredISArray = SPushHelper(sField, dataset, filterString, filteredISArray);
 	}
 	return filteredISArray;
 };
@@ -151,128 +131,62 @@ const filterMComparison = (filter: any, key: string, dataSet: any[]|undefined): 
 	return [];
 };
 
+const NumberPushHelper = (mField: string, dataset: any[], filterNumber: number, filteredArray: any [],
+						  compare: string): any [] => {
+	if (compare === "LT") {
+		for (let section of dataset) {
+			if (section[mField] < filterNumber) {
+				filteredArray.push(section);
+			}
+		}
+	} else if (compare === "GT") {
+		for (let section of dataset) {
+			if (section[mField] > filterNumber) {
+				filteredArray.push(section);
+			}
+		}
+	} else {
+		for (let section of dataset) {
+			if (section[mField] === filterNumber) {
+				filteredArray.push(section);
+			}
+		}
+	}
+	return filteredArray;
+};
+
 const filterLT = (filter: any, dataset: any[]|undefined) => {
-	let filteredLTArray = [];
+	let filteredLTArray: any [] = [];
 	let mKey = filter["LT"];  // eg: {"sections_avg":97}
 	let idAndMField = Object.keys(mKey)[0]; // eg: {"sections_avg"}
 	let filterNumber: number = mKey[idAndMField];
 	let mField = idAndMField.split("_")[1]; // eg: "avg"
 	if (typeof dataset !== "undefined") {
-		if (mField === "avg") {
-			for (let section of dataset) {
-				if (section["avg"] < filterNumber) {
-					filteredLTArray.push(section);
-				}
-			}
-		} else if (mField === "pass") {
-			for (let section of dataset) {
-				if (section["pass"] < filterNumber) {
-					filteredLTArray.push(section);
-				}
-			}
-		} else if (mField === "fail") {
-			for (let section of dataset) {
-				if (section["fail"] < filterNumber) {
-					filteredLTArray.push(section);
-				}
-			}
-		} else if (mField === "audit") {
-			for (let section of dataset) {
-				if (section["audit"] < filterNumber) {
-					filteredLTArray.push(section);
-				}
-			}
-		} else if (mField === "year") {
-			for (let section of dataset) {
-				if (section["year"] < filterNumber) {
-					filteredLTArray.push(section);
-				}
-			}
-		}
+		filteredLTArray = NumberPushHelper(mField, dataset, filterNumber, filteredLTArray, "LT");
 	}
 	return filteredLTArray;
 };
 
 const filterGT = (filter: any, dataset: any[]|undefined) => {
-	let filteredGTArray = [];
+	let filteredGTArray: any[] = [];
 	let mKey = filter["GT"];  // eg: {"sections_avg":97}
 	let idAndMField = Object.keys(mKey)[0]; // eg: {"sections_avg"}
 	let filterNumber: number = mKey[idAndMField];
 	let mField = idAndMField.split("_")[1]; // eg: "avg"
 	if (typeof dataset !== "undefined") {
-		if (mField === "avg") {
-			for (let section of dataset) {
-				if (section["avg"] > filterNumber) {
-					filteredGTArray.push(section);
-				}
-			}
-		} else if (mField === "pass") {
-			for (let section of dataset) {
-				if (section["pass"] > filterNumber) {
-					filteredGTArray.push(section);
-				}
-			}
-		} else if (mField === "fail") {
-			for (let section of dataset) {
-				if (section["fail"] > filterNumber) {
-					filteredGTArray.push(section);
-				}
-			}
-		} else if (mField === "audit") {
-			for (let section of dataset) {
-				if (section["audit"] > filterNumber) {
-					filteredGTArray.push(section);
-				}
-			}
-		} else if (mField === "year") {
-			for (let section of dataset) {
-				if (section["year"] > filterNumber) {
-					filteredGTArray.push(section);
-				}
-			}
-		}
+		filteredGTArray = NumberPushHelper(mField, dataset, filterNumber, filteredGTArray, "GT");
 	}
 	return filteredGTArray;
 };
 
 const filterEQ = (filter: any, dataset: any[]|undefined) => {
-	let filteredEQArray = [];
+	let filteredEQArray: any[] = [];
 	let mKey = filter["EQ"];  // eg: {"sections_avg":97}
 	let idAndMField = Object.keys(mKey)[0]; // eg: {"sections_avg"}
 	let filterNumber: number = mKey[idAndMField];
 	let mField = idAndMField.split("_")[1]; // eg: "avg"
 	if (typeof dataset !== "undefined") {
-		if (mField === "avg") {
-			for (let section of dataset) {
-				if (section["avg"] === filterNumber) {
-					filteredEQArray.push(section);
-				}
-			}
-		} else if (mField === "pass") {
-			for (let section of dataset) {
-				if (section["pass"] === filterNumber) {
-					filteredEQArray.push(section);
-				}
-			}
-		} else if (mField === "fail") {
-			for (let section of dataset) {
-				if (section["fail"] === filterNumber) {
-					filteredEQArray.push(section);
-				}
-			}
-		} else if (mField === "audit") {
-			for (let section of dataset) {
-				if (section["audit"] === filterNumber) {
-					filteredEQArray.push(section);
-				}
-			}
-		} else if (mField === "year") {
-			for (let section of dataset) {
-				if (section["year"] === filterNumber) {
-					filteredEQArray.push(section);
-				}
-			}
-		}
+		filteredEQArray = NumberPushHelper(mField, dataset, filterNumber, filteredEQArray, "EQ");
 	}
 	return filteredEQArray;
 };

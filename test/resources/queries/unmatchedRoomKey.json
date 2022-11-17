@@ -1,0 +1,19 @@
+{
+	"title": "query with unmatched dataset room type ID and keys",
+	"input": {
+		"WHERE": {
+			"IS": {
+				"rooms_dept": "cnto"
+			}
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"rooms_dept",
+				"rooms_avg"
+			],
+			"ORDER": "rooms_avg"
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+}
