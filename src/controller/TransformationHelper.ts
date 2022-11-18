@@ -137,29 +137,34 @@ const sortResult = (finalResult: InsightResult [], order: any): InsightResult []
 		finalResult = singleSort(finalResult, order);
 	} else {
 		let sortedResult: InsightResult [] = finalResult;
+		const direction: string = order["dir"];
 		const sortKeys: string [] = order["keys"];
-		const firstKey: string = sortKeys[0];
-		sortedResult = singleSort(sortedResult, firstKey);
-		if (sortKeys.length === 1) {
-			return sortedResult;
-		} else {
-			for (let i = 1; i < sortKeys.length; i++) {
-				sortedResult = doubleSort(sortKeys[i - 1], sortKeys[i], sortedResult);
+		const sortKeysNew: string [] = [];
+		for (let k of sortKeys) {
+			if (k.includes("_")) {
+				sortKeysNew.push(k.split("_")[1]);
+			} else {
+				sortKeysNew.push(k);
 			}
+		}
+		sortedResult.sort(function(a, b) {
+			for (let key of sortKeysNew) {
+				if ((a as any)[key] < (b as any)[key]) {
+					return -1;
+				}
+				if ((a as any)[key] > (b as any)[key]) {
+					return 1;
+				}
+			}
+			return 0;
+		});
+		if (direction === "DOWN") {
+			return sortedResult.reverse();
+		} else {
 			return sortedResult;
 		}
 	}
 	return finalResult;
-};
-
-const doubleSort = (prev: string, curr: string, result: InsightResult[]): InsightResult[] => {
-	if (prev.includes("_")) {
-		prev = prev.split("_")[1];  // eg: "avg"
-	}
-	if (curr.includes("_")) {
-		curr = prev.split("_")[1];  // eg: "avg"
-	}
-	return result;
 };
 
 const singleSort = (finalResult: InsightResult [], order: string): InsightResult [] => {
@@ -167,23 +172,15 @@ const singleSort = (finalResult: InsightResult [], order: string): InsightResult
 	if (order.includes("_")) {
 		orderKey = order.split("_")[1];  // eg: "avg"
 	}
-	if (orderKey === "avg" || orderKey === "pass" || orderKey === "fail" || orderKey === "audit" ||
-		orderKey === "year" || orderKey === "lat" || orderKey === "lon" || orderKey === "seats" ||
-		typeof finalResult[0][orderKey] === "number") {
-		finalResult.sort((a,b) => {
-			return (a as any)[orderKey] - (b as any)[orderKey];
-		});
-	} else {
-		finalResult.sort(function(a, b) {
-			if ((a as any)[orderKey] < (b as any)[orderKey]) {
-				return -1;
-			}
-			if ((a as any)[orderKey] > (b as any)[orderKey]) {
-				return 1;
-			}
-			return 0;
-		});
-	}
+	finalResult.sort(function(a, b) {
+		if ((a as any)[orderKey] < (b as any)[orderKey]) {
+			return -1;
+		}
+		if ((a as any)[orderKey] > (b as any)[orderKey]) {
+			return 1;
+		}
+		return 0;
+	});
 	return finalResult;
 };
 

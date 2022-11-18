@@ -194,7 +194,7 @@ describe("InsightFacade", function () {
 		});
 
 		function assertResult(actual: any, expected: InsightResult[], input: unknown): void {
-			expect(actual).to.have.deep.members(expected);
+			expect(actual).to.deep.equal(expected);
 		}
 
 		folderTest<Input, Output, Error>(
