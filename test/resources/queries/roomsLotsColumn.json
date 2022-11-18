@@ -1,0 +1,143 @@
+{
+	"title": "query with room with long column",
+	"input": {
+		"WHERE": {
+			"AND": [
+				{
+					"LT": {
+						"rooms_lon": 99
+					}
+				},
+				{
+					"GT": {
+						"rooms_seats": 250
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"rooms_name",
+				"rooms_seats",
+				"rooms_type",
+				"rooms_furniture",
+				"rooms_href"
+			]
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"rooms_name": "BUCH_A101",
+			"rooms_seats": 275,
+			"rooms_type": "Tiered Large Group",
+			"rooms_furniture": "Classroom-Fixed Tablets",
+			"rooms_href": "http://students.ubc.ca/campus/discover/buildings-and-classrooms/room/BUCH-A101"
+		},
+		{
+			"rooms_name": "CIRS_1250",
+			"rooms_seats": 426,
+			"rooms_type": "Tiered Large Group",
+			"rooms_furniture": "Classroom-Fixed Tablets",
+			"rooms_href": "http://students.ubc.ca/campus/discover/buildings-and-classrooms/room/CIRS-1250"
+		},
+		{
+			"rooms_name": "CHEM_B150",
+			"rooms_seats": 265,
+			"rooms_type": "Tiered Large Group",
+			"rooms_furniture": "Classroom-Fixed Tablets",
+			"rooms_href": "http://students.ubc.ca/campus/discover/buildings-and-classrooms/room/CHEM-B150"
+		},
+		{
+			"rooms_name": "ESB_1013",
+			"rooms_seats": 350,
+			"rooms_type": "Tiered Large Group",
+			"rooms_furniture": "Classroom-Fixed Tablets",
+			"rooms_href": "http://students.ubc.ca/campus/discover/buildings-and-classrooms/room/ESB-1013"
+		},
+		{
+			"rooms_name": "HEBB_100",
+			"rooms_seats": 375,
+			"rooms_type": "Tiered Large Group",
+			"rooms_furniture": "Classroom-Fixed Tables/Fixed Chairs",
+			"rooms_href": "http://students.ubc.ca/campus/discover/buildings-and-classrooms/room/HEBB-100"
+		},
+		{
+			"rooms_name": "HENN_200",
+			"rooms_seats": 257,
+			"rooms_type": "Tiered Large Group",
+			"rooms_furniture": "Classroom-Fixed Tablets",
+			"rooms_href": "http://students.ubc.ca/campus/discover/buildings-and-classrooms/room/HENN-200"
+		},
+		{
+			"rooms_name": "ANGU_098",
+			"rooms_seats": 260,
+			"rooms_type": "Tiered Large Group",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_href": "http://students.ubc.ca/campus/discover/buildings-and-classrooms/room/ANGU-098"
+		},
+		{
+			"rooms_name": "LSC_1001",
+			"rooms_seats": 350,
+			"rooms_type": "Tiered Large Group",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_href": "http://students.ubc.ca/campus/discover/buildings-and-classrooms/room/LSC-1001"
+		},
+		{
+			"rooms_name": "LSC_1002",
+			"rooms_seats": 350,
+			"rooms_type": "Tiered Large Group",
+			"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs",
+			"rooms_href": "http://students.ubc.ca/campus/discover/buildings-and-classrooms/room/LSC-1002"
+		},
+		{
+			"rooms_name": "SCRF_100",
+			"rooms_seats": 280,
+			"rooms_type": "Tiered Large Group",
+			"rooms_furniture": "Classroom-Fixed Tablets",
+			"rooms_href": "http://students.ubc.ca/campus/discover/buildings-and-classrooms/room/SCRF-100"
+		},
+		{
+			"rooms_name": "OSBO_A",
+			"rooms_seats": 442,
+			"rooms_type": "Open Design General Purpose",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_href": "http://students.ubc.ca/campus/discover/buildings-and-classrooms/room/OSBO-A"
+		},
+		{
+			"rooms_name": "SRC_220A",
+			"rooms_seats": 299,
+			"rooms_type": "TBD",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_href": "http://students.ubc.ca/campus/discover/buildings-and-classrooms/room/SRC-220A"
+		},
+		{
+			"rooms_name": "SRC_220B",
+			"rooms_seats": 299,
+			"rooms_type": "TBD",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_href": "http://students.ubc.ca/campus/discover/buildings-and-classrooms/room/SRC-220B"
+		},
+		{
+			"rooms_name": "SRC_220C",
+			"rooms_seats": 299,
+			"rooms_type": "TBD",
+			"rooms_furniture": "Classroom-Movable Tables & Chairs",
+			"rooms_href": "http://students.ubc.ca/campus/discover/buildings-and-classrooms/room/SRC-220C"
+		},
+		{
+			"rooms_name": "WESB_100",
+			"rooms_seats": 325,
+			"rooms_type": "Tiered Large Group",
+			"rooms_furniture": "Classroom-Fixed Tablets",
+			"rooms_href": "http://students.ubc.ca/campus/discover/buildings-and-classrooms/room/WESB-100"
+		},
+		{
+			"rooms_name": "WOOD_2",
+			"rooms_seats": 503,
+			"rooms_type": "Tiered Large Group",
+			"rooms_furniture": "Classroom-Fixed Tablets",
+			"rooms_href": "http://students.ubc.ca/campus/discover/buildings-and-classrooms/room/WOOD-2"
+		}
+	]
+}

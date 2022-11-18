@@ -28,7 +28,7 @@ describe("InsightFacade", function () {
 	before(function () {
 		sections = getContentFromArchives("pair.zip");
 		rooms = getContentFromArchives("rooms.zip");
-	});  // the content of the test dataset to add
+	});
 
 	describe("List Datasets", function () {
 		let facade: IInsightFacade;
@@ -190,7 +190,7 @@ describe("InsightFacade", function () {
 			clearDisk();
 			facade = new InsightFacade();
 			await facade.addDataset("sections", sections, InsightDatasetKind.Sections);
-			await facade.addDataset("sections2", sections, InsightDatasetKind.Sections);
+			await facade.addDataset("rooms", rooms, InsightDatasetKind.Rooms);
 		});
 
 		function assertResult(actual: any, expected: InsightResult[], input: unknown): void {

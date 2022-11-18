@@ -1,0 +1,36 @@
+{
+	"title": "query with room and lat and lon",
+	"input": {
+		"WHERE": {
+			"AND": [
+				{
+					"LT": {
+						"rooms_lon": 99
+					}
+				},
+				{
+					"GT": {
+						"rooms_lat": 49.27
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"rooms_name",
+				"rooms_lat"
+			]
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"rooms_name": "IONA_301",
+			"rooms_lat": 49.27106
+		},
+		{
+			"rooms_name": "IONA_633",
+			"rooms_lat": 49.27106
+		}
+	]
+}

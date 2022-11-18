@@ -1,0 +1,51 @@
+{
+	"title": "query with order break tie",
+	"input": {
+		"WHERE": {
+			"AND": [
+				{
+					"IS": {
+						"rooms_furniture": "*Tables*"
+					}
+				},
+				{
+					"GT": {
+						"rooms_seats": 300
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"rooms_shortname",
+				"rooms_number"
+			],
+			"ORDER": {
+				"dir": "UP",
+				"keys": [
+					"rooms_shortname",
+					"rooms_number"
+				]
+			}
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"rooms_shortname": "HEBB",
+			"rooms_number": "100"
+		},
+		{
+			"rooms_shortname": "LSC",
+			"rooms_number": "1001"
+		},
+		{
+			"rooms_shortname": "LSC",
+			"rooms_number": "1002"
+		},
+		{
+			"rooms_shortname": "OSBO",
+			"rooms_number": "A"
+		}
+	]
+}

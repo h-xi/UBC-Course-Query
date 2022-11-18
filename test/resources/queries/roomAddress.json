@@ -1,0 +1,32 @@
+{
+	"title": "query with room address",
+	"input": {
+		"WHERE": {
+			"IS": {
+				"rooms_address": "*Union*"
+			}
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"rooms_name",
+				"rooms_address"
+			],
+			"ORDER": "rooms_address"
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"rooms_name": "SRC_220A",
+			"rooms_address": "6000 Student Union Blvd"
+		},
+		{
+			"rooms_name": "SRC_220B",
+			"rooms_address": "6000 Student Union Blvd"
+		},
+		{
+			"rooms_name": "SRC_220C",
+			"rooms_address": "6000 Student Union Blvd"
+		}
+	]
+}
