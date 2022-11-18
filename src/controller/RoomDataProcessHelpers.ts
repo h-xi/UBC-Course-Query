@@ -1,5 +1,3 @@
-import fs from "fs-extra";
-import path from "path";
 import jsZip from "jszip";
 import {parse} from "parse5";
 import {Document} from "parse5/dist/tree-adapters/default";
@@ -23,8 +21,8 @@ interface Buildings {
 	fullname: string,
 	shortname: string,
 	address: string,
-	lat: string,
-	lon: string,
+	lat: number,
+	lon: number,
 }
 
 const processRooms = async (zipFile: string): Promise<any[]> => {
@@ -56,11 +54,17 @@ const processRooms = async (zipFile: string): Promise<any[]> => {
 					}
 				}
 				Promise.all(validBuildings).then(() => {
-					fulfill(roomsObjectList);
-				}).catch((e) => {
-					console.log(e);
-					reject(e);
-				});
+					for (let num in roomsObjectList) {
+						console.log(num);
+              	if (
+               	 	roomsObjectList[num].lat === 0 &&
+                	roomsObjectList[num].lon === 0
+             	 ) {
+              	  roomsObjectList.splice(Number(num), 1);
+             	 }
+          	  }
+         	  fulfill(roomsObjectList);
+         	 });
 			}).catch((e) => {
 				console.log(e);
 				reject(e);
@@ -82,6 +86,8 @@ const findValidBuildings = async (content: any): Promise<string [][]> => {
 				console.log(e);
 				reject(e);
 			});
+		} else {
+			reject();
 		}
 	});
 };
@@ -159,16 +165,23 @@ const findRoomTable = (node: Document) => {
   	getNodeInfo(content, node, "views-table cols-5 table");
   	return content[0].childNodes[3];
 };
-const getBuildingInfo = async (node: any, buildingShortName: string) => {
+const getBuildingInfo = async (node: any, buildingShortName: string): Promise<Buildings> => {
 	let building = {} as Buildings;
 	let content: any[] = [];
 	getNodeInfo(content, node, "field-content");
-	const coordinates: any = await getBuildingCoordinates(content[1].childNodes[0].value);
-	building.fullname = content[0].childNodes[0].value;
-	building.shortname = buildingShortName;
-	building.address = content[1].childNodes[0].value;
-	building.lat = coordinates.lat;
-	building.lon = coordinates.lon;
+	if (content.length !== 0) {
+		building.fullname = content[0].childNodes[0].value;
+		building.shortname = buildingShortName;
+		building.address = content[1].childNodes[0].value;
+		const coordinates: any = await getBuildingCoordinates(content[1].childNodes[0].value);
+		if ("lat" in coordinates) {
+			building.lat = Number(coordinates.lat);
+			building.lon = Number(coordinates.lon);
+		} else {
+			building.lat = 0;
+			building.lon = 0;
+		}
+	}
 	return building;
 };
 
