@@ -55,7 +55,6 @@ const processRooms = async (zipFile: string): Promise<any[]> => {
 				}
 				Promise.all(validBuildings).then(() => {
 					for (let num in roomsObjectList) {
-						console.log(num);
               	if (
                	 	roomsObjectList[num].lat === Number.POSITIVE_INFINITY &&
                 	roomsObjectList[num].lon === Number.POSITIVE_INFINITY
@@ -66,7 +65,7 @@ const processRooms = async (zipFile: string): Promise<any[]> => {
          	  fulfill(roomsObjectList);
          	 });
 			}).catch((e) => {
-				console.log(e);
+				console.error(e);
 				reject(e);
 			});
    	 });
@@ -83,7 +82,7 @@ const findValidBuildings = async (content: any): Promise<string [][]> => {
 				createBuildingDirectory(validBuildings, document);
 				fullfill(validBuildings);
 			}).catch((e: any) => {
-				console.log(e);
+				console.error(e);
 				reject(e);
 			});
 		} else {

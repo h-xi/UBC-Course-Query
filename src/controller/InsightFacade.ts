@@ -61,11 +61,11 @@ export default class InsightFacade implements IInsightFacade {
 				this.addedDatasetID.push(id);
 				return this.addedDatasetID;
 			} catch (error) {
-				console.log(error);
+				console.error(error);
 				throw new InsightError("Error saving dataset to disk");
 			}
 		} else {
-			console.log("error! Dataset already exists");
+			console.error("error! Dataset already exists");
 			throw new InsightError("Dataset already exists");
 		}
 	};
@@ -218,7 +218,7 @@ export default class InsightFacade implements IInsightFacade {
 				throw new NotFoundError("Dataset not in Memory");
 			}
 		} catch(error) {
-			console.log(error);
+			console.error(error);
 			throw new NotFoundError("Dataset not found in Memory");
 		}
 	};
