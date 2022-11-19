@@ -82,7 +82,7 @@ const checkInAllOthers = (oneSection: any, allArrays: any []): boolean => {
 };
 
 const checkWildcards = (sectionString: string, filterString: string): boolean => {
-	if (sectionString === filterString) {
+	if (sectionString === filterString || filterString === "*") {
 		return true;
 	}
 	if (filterString[0] === "*" && filterString[filterString.length - 1] !== "*") {
