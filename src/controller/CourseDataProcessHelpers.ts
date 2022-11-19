@@ -41,7 +41,6 @@ const createCourseMapping = (id: string, processedCourses: any []): Course [] =>
 			courses.push(course);
 	  });
 	});
-	console.log(courses[0]);
 	saveToDisk(id, courses);
 	return courses;
 };
