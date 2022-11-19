@@ -57,8 +57,8 @@ const processRooms = async (zipFile: string): Promise<any[]> => {
 					for (let num in roomsObjectList) {
 						console.log(num);
               	if (
-               	 	roomsObjectList[num].lat === 0 &&
-                	roomsObjectList[num].lon === 0
+               	 	roomsObjectList[num].lat === Number.POSITIVE_INFINITY &&
+                	roomsObjectList[num].lon === Number.POSITIVE_INFINITY
              	 ) {
               	  roomsObjectList.splice(Number(num), 1);
              	 }
@@ -178,8 +178,8 @@ const getBuildingInfo = async (node: any, buildingShortName: string): Promise<Bu
 			building.lat = Number(coordinates.lat);
 			building.lon = Number(coordinates.lon);
 		} else {
-			building.lat = 0;
-			building.lon = 0;
+			building.lat = Number.POSITIVE_INFINITY;
+			building.lon = Number.POSITIVE_INFINITY;
 		}
 	}
 	return building;
