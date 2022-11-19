@@ -240,29 +240,27 @@ const getRoomLinks = (node: Document, content: string []) => {
 const mapRoom = (roomsObjectList: any[], building: any, roomNum: string[],
 	roomSeat: string[], roomType: string[],
 	roomFurniture: string[], roomLinks: string[]) => {
-  	if (
-    	roomNum.length === roomType.length &&
-    	roomNum.length === roomLinks.length &&
-    	roomType.length === roomLinks.length
-  	) {
-    	for (let num in roomNum) {
-      	let room = {} as Rooms;
-      	room.fullname = building.fullname;
-      	room.shortname = building.shortname;
-      	room.address = building.address;
-      	room.lat = building.lat;
-      	room.lon = building.lon;
-      	room.number = roomNum[num];
-      	room.name = building.shortname + "_" + roomNum[num];
-      	room.seats = Number(roomSeat[num]);
-      	room.furniture = roomFurniture[num];
-      	room.href = roomLinks[num];
-      	room.type = roomType[num];
-      	roomsObjectList.push(room);
-    	}
-  	} else {
-    	throw new Error();
-  	}
+	if (
+		roomNum.length === roomType.length &&
+		roomNum.length === roomLinks.length &&
+		roomType.length === roomLinks.length
+	) {
+		for (let num in roomNum) {
+			let room = {} as Rooms;
+			room.fullname = building.fullname;
+			room.shortname = building.shortname;
+			room.address = building.address;
+			room.lat = building.lat;
+			room.lon = building.lon;
+			room.number = roomNum[num];
+			room.name = building.shortname + "_" + roomNum[num];
+			room.seats = Number(roomSeat[num]);
+			room.furniture = roomFurniture[num];
+			room.href = roomLinks[num];
+			room.type = roomType[num];
+			roomsObjectList.push(room);
+		}
+	}
 };
 
 export {processRooms};
