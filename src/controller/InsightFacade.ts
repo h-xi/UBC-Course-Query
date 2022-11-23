@@ -33,7 +33,7 @@ export default class InsightFacade implements IInsightFacade {
 	private listOfAddedData: InsightDataset[] = [];
 	private memDataset: MemoryDataSet[] = [];
 	constructor() {
-		// console.log("InsightFacadeImpl::init()");
+		console.log("InsightFacadeImpl::init()");
 	}
 
 	public addDataset = async (id: string, content: string, kind: InsightDatasetKind): Promise<string[]> => {
@@ -61,11 +61,11 @@ export default class InsightFacade implements IInsightFacade {
 				this.addedDatasetID.push(id);
 				return this.addedDatasetID;
 			} catch (error) {
-				// console.log(error);
+				console.error(error);
 				throw new InsightError("Error saving dataset to disk");
 			}
 		} else {
-			// console.log("error! Dataset already exists");
+			console.error("error! Dataset already exists");
 			throw new InsightError("Dataset already exists");
 		}
 	};
@@ -114,7 +114,6 @@ export default class InsightFacade implements IInsightFacade {
 				const zeroResult = [] as InsightResult[];
 				fullfill(zeroResult);
 			}
-			console.log(filteredDataSet.length);
 			let transformedData: InsightResult[];
 			let columnsKey: string [] = getColumnsKey(options);
 			let finalResult: InsightResult [];
@@ -219,6 +218,7 @@ export default class InsightFacade implements IInsightFacade {
 				throw new NotFoundError("Dataset not in Memory");
 			}
 		} catch(error) {
+			console.error(error);
 			throw new NotFoundError("Dataset not found in Memory");
 		}
 	};

@@ -55,10 +55,9 @@ const processRooms = async (zipFile: string): Promise<any[]> => {
 				}
 				Promise.all(validBuildings).then(() => {
 					for (let num in roomsObjectList) {
-						// console.log(num);
               	if (
-               	 	roomsObjectList[num].lat === 0 &&
-                	roomsObjectList[num].lon === 0
+               	 	roomsObjectList[num].lat === Number.POSITIVE_INFINITY &&
+                	roomsObjectList[num].lon === Number.POSITIVE_INFINITY
              	 ) {
               	  roomsObjectList.splice(Number(num), 1);
              	 }
@@ -66,7 +65,7 @@ const processRooms = async (zipFile: string): Promise<any[]> => {
          	  fulfill(roomsObjectList);
          	 });
 			}).catch((e) => {
-				// console.log(e);
+				console.error(e);
 				reject(e);
 			});
    	 });
@@ -83,7 +82,7 @@ const findValidBuildings = async (content: any): Promise<string [][]> => {
 				createBuildingDirectory(validBuildings, document);
 				fullfill(validBuildings);
 			}).catch((e: any) => {
-				// console.log(e);
+				console.error(e);
 				reject(e);
 			});
 		} else {
@@ -178,8 +177,8 @@ const getBuildingInfo = async (node: any, buildingShortName: string): Promise<Bu
 			building.lat = Number(coordinates.lat);
 			building.lon = Number(coordinates.lon);
 		} else {
-			building.lat = 0;
-			building.lon = 0;
+			building.lat = Number.POSITIVE_INFINITY;
+			building.lon = Number.POSITIVE_INFINITY;
 		}
 	}
 	return building;
@@ -241,29 +240,27 @@ const getRoomLinks = (node: Document, content: string []) => {
 const mapRoom = (roomsObjectList: any[], building: any, roomNum: string[],
 	roomSeat: string[], roomType: string[],
 	roomFurniture: string[], roomLinks: string[]) => {
-  	if (
-    	roomNum.length === roomType.length &&
-    	roomNum.length === roomLinks.length &&
-    	roomType.length === roomLinks.length
-  	) {
-    	for (let num in roomNum) {
-      	let room = {} as Rooms;
-      	room.fullname = building.fullname;
-      	room.shortname = building.shortname;
-      	room.address = building.address;
-      	room.lat = building.lat;
-      	room.lon = building.lon;
-      	room.number = roomNum[num];
-      	room.name = building.shortname + "_" + roomNum[num];
-      	room.seats = Number(roomSeat[num]);
-      	room.furniture = roomFurniture[num];
-      	room.href = roomLinks[num];
-      	room.type = roomType[num];
-      	roomsObjectList.push(room);
-    	}
-  	} else {
-    	throw new Error();
-  	}
+	if (
+		roomNum.length === roomType.length &&
+		roomNum.length === roomLinks.length &&
+		roomType.length === roomLinks.length
+	) {
+		for (let num in roomNum) {
+			let room = {} as Rooms;
+			room.fullname = building.fullname;
+			room.shortname = building.shortname;
+			room.address = building.address;
+			room.lat = building.lat;
+			room.lon = building.lon;
+			room.number = roomNum[num];
+			room.name = building.shortname + "_" + roomNum[num];
+			room.seats = Number(roomSeat[num]);
+			room.furniture = roomFurniture[num];
+			room.href = roomLinks[num];
+			room.type = roomType[num];
+			roomsObjectList.push(room);
+		}
+	}
 };
 
 export {processRooms};

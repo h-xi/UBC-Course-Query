@@ -119,6 +119,15 @@ describe("InsightFacade", function () {
 				});
 		});
 
+		it("should add one room dataset", function () {
+			return facade.addDataset("rooms1", rooms, InsightDatasetKind.Rooms)
+				.then((ids) => {
+					expect(ids).to.be.an.instanceof(Array);
+					expect(ids).to.have.length(1);
+					expect(ids).to.deep.equal(["rooms1"]);
+				});
+		});
+
 		it("should add one course dataset", function () {
 			return facade.addDataset("sections", sections, InsightDatasetKind.Sections)
 				.then((ids) => {
@@ -166,6 +175,16 @@ describe("InsightFacade", function () {
  					expect(removeId).to.be.deep.equal("sections");
  				});
  		});
+
+		it("should remove one room dataset", function () {
+			return facade.addDataset("rooms", rooms, InsightDatasetKind.Rooms)
+				.then((ids) => {
+					return facade.removeDataset("rooms");
+				})
+				.then((removeId) => {
+					expect(removeId).to.be.deep.equal("rooms");
+				});
+		});
 
  		it("should reject with NotFoundError if try to remove a dataset hasn't been added yet", function () {
  			const result = facade.removeDataset("sections");
