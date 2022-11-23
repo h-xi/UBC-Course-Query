@@ -2,6 +2,7 @@ import jsZip from "jszip";
 import {parse} from "parse5";
 import {Document} from "parse5/dist/tree-adapters/default";
 import request from "node:http";
+import {saveToDisk} from "./CourseDataProcessHelpers";
 
 interface Rooms {
 	fullname: string,
@@ -25,7 +26,7 @@ interface Buildings {
 	lon: number,
 }
 
-const processRooms = async (zipFile: string): Promise<any[]> => {
+const processRooms = async (id: string, zipFile: string): Promise<any[]> => {
 	let roomsObjectList: Rooms[] = [];
 	let toBeProcessed: Array<Promise<any>> = [];
 	let validBuildings: Array<Promise<any>> = [];
@@ -61,8 +62,9 @@ const processRooms = async (zipFile: string): Promise<any[]> => {
              	 ) {
               	  roomsObjectList.splice(Number(num), 1);
              	 }
-          	  }
-         	  fulfill(roomsObjectList);
+					}
+					saveToDisk(id, roomsObjectList);
+					fulfill(roomsObjectList);
          	 });
 			}).catch((e) => {
 				console.error(e);

@@ -80,7 +80,7 @@ const processCourses = async (zipFile: string): Promise<any []> => {
 	});
 };
 
-const saveToDisk = (fileID: string, processedData: Course []) => {
+const saveToDisk = (fileID: string, processedData: any []) => {
 	const stringData = JSON.stringify(processedData);
 	fs.outputFileSync(path.join(__dirname, `../../data/${fileID}.json`), stringData);
 };
@@ -94,4 +94,4 @@ const findNumRows = (processedData: any []) => {
 	return numRows;
 };
 
-export {processCourses, createCourseMapping, findNumRows};
+export {processCourses, createCourseMapping, findNumRows, saveToDisk};
