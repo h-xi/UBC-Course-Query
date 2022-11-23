@@ -51,7 +51,7 @@ export default class InsightFacade implements IInsightFacade {
 					datasetMem.id = id;
 					datasetMem.content = memoryContent;
 				} else {
-					const roomsArray = await processRooms(content);
+					const roomsArray = await processRooms(id, content);
 					numRows = roomsArray.length;
 					datasetMem.id = id;
 					datasetMem.content = roomsArray;
