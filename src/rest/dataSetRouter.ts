@@ -8,28 +8,29 @@ const addDatasetRouter = async (req: Request, res: Response) => {
 	let data = req.body;
 	let id = req.params.id;
 	let datasetType = req.params.kind;
+	console.log(datasetType);
 	if (Object.keys(data).length === 0) {
 		return res.status(400).json({error: "Please provide dataset file"});
 	}
-	if (datasetType !== ("rooms" || "sections")) {
-		return res.status(400).json({error: "Invalid dataset Type"});
-	}
-
-	let kind;
-	if (datasetType === "rooms") {
-		kind = InsightDatasetKind.Rooms;
+	if (datasetType === "rooms" || datasetType === "sections") {
+		let kind;
+		if (datasetType === "rooms") {
+			kind = InsightDatasetKind.Rooms;
+		} else {
+			kind = InsightDatasetKind.Sections;
+		}
+		try {
+			data = new Buffer(data).toString("base64");
+			const result = await facade.addDataset(id, data, kind);
+			return res.send(result);
+		} catch (e: any) {
+			return res.status(400).json({
+				error: e.message
+			});
+		}
 	} else {
-		kind = InsightDatasetKind.Sections;
-	}
-	try {
-		data = new Buffer(data).toString("base64");
-		const result = await facade.addDataset(id, data, kind);
-		return res.send(result);
-	} catch (e: any) {
-		return res.status(400).json({
-			error: e.message
-		});
-	}
+		res.status(400).send({error: "Invalid dataset Type"});
+	};
 };
 
 const removeDatasetRouter = async (req: Request, res: Response) => {
