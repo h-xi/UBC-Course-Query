@@ -5,6 +5,7 @@ import {App} from "../App";
 import InsightFacade from "../controller/InsightFacade";
 import {IInsightFacade, InsightError, InsightResult, ResultTooLargeError} from "../controller/IInsightFacade";
 import {postHandler} from "./postQueryRouter";
+import {addDatasetRouter, removeDatasetRouter, listDatasetRouter} from "./dataSetRouter";
 
 export default class Server {
 	private readonly port: number;
@@ -89,9 +90,10 @@ export default class Server {
 	private registerRoutes() {
 		// This is an example endpoint this you can invoke by accessing this URL in your browser:
 		// http://localhost:4321/echo/hello
-		this.express.get("/echo/:msg", Server.echo);
-
-		// TODO: your other endpoints should go here
+		// this.express.get("/echo/:msg", Server.echo);
+		this.express.put("/dataset/:id/:kind", addDatasetRouter);
+		this.express.delete("/dataset/:id", removeDatasetRouter);
+		this.express.get("/datasets", listDatasetRouter);
 		this.express.post("/query", postHandler);
 	}
 
