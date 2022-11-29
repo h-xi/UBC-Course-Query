@@ -4,8 +4,7 @@ import cors from "cors";
 import {App} from "../App";
 import InsightFacade from "../controller/InsightFacade";
 import {IInsightFacade, InsightError, InsightResult, ResultTooLargeError} from "../controller/IInsightFacade";
-import {postHandler} from "./postQueryRouter";
-import {addDatasetRouter, removeDatasetRouter, listDatasetRouter} from "./dataSetRouter";
+import {addDatasetRouter, removeDatasetRouter, listDatasetRouter, postHandler} from "./dataSetRouter";
 
 export default class Server {
 	private readonly port: number;

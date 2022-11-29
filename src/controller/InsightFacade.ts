@@ -65,13 +65,13 @@ export default class InsightFacade implements IInsightFacade {
 				throw new InsightError("Error saving dataset to disk");
 			}
 		} else {
-			if (!this.addedDatasetID.includes(id)) {
-				try {
-					this.retrieveDatasetFromDisk(id);
-				} catch (e) {
-					throw new InsightError("Error adding dataset into Memory");
-				}
-			}
+			// if (!this.addedDatasetID.includes(id)) {
+			// 	try {
+			// 		this.retrieveDatasetFromDisk(id);
+			// 	} catch (e) {
+					// throw new InsightError("Error adding dataset into Memory");
+				// }
+			// }
 			throw new InsightError("Dataset already exists");
 		}
 	};
@@ -190,16 +190,7 @@ export default class InsightFacade implements IInsightFacade {
 		let counter: number = 0;
 		for (let s of idArray) {
 			if (!this.addedDatasetID.includes(s)) {
-				if (!fs.existsSync(path.join(__dirname, `../../data/${s}.json`))) {
-					throw new InsightError("error: try to query nonexistent dataset");
-				} else {
-					try {
-						this.retrieveDatasetFromDisk(s);
-					} catch (e) {
-						console.log(e);
-						throw new InsightError("Invalid Dataset");
-					}
-				}
+				throw new InsightError("error: try to query nonexistent dataset");
 			}
 			if (s === idArray[0]) {
 				counter++;
