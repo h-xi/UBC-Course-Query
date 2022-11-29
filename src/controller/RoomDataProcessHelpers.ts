@@ -16,7 +16,7 @@ interface Rooms {
 	type: string,
 	furniture: string,
 	href: string
-};
+}
 
 interface Buildings {
 	fullname: string,

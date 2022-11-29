@@ -1,24 +1,30 @@
+import {InsightError} from "./IInsightFacade";
+
 const filterDataSet = (filter: any, dataSet: any[]|undefined): any[] => {
 	const key = Object.keys(filter)[0];
-	if (key === "LT" || key === "GT" || key === "EQ") {
-		return filterMComparison(filter, key, dataSet);
-	}
-	if (key === "IS") {
-		return filterSComparison(filter, dataSet);
-	}
-	if (key === "AND") {
-		return filterAnd(filter, dataSet);
-	}
-	if (key === "OR") {
-		return filterOr(filter, dataSet);
-	}
-	if (key === "NOT") {
-		return filterNot(filter, dataSet);
-	}
 	if (typeof dataSet !== "undefined") {
-		return dataSet;
+		if (key === "LT" || key === "GT" || key === "EQ") {
+			return filterMComparison(filter, key, dataSet);
+		}
+		if (key === "IS") {
+			return filterSComparison(filter, dataSet);
+		}
+		if (key === "AND") {
+			return filterAnd(filter, dataSet);
+		}
+		if (key === "OR") {
+			return filterOr(filter, dataSet);
+		}
+		if (key === "NOT") {
+			return filterNot(filter, dataSet);
+		}
+		if (typeof dataSet !== "undefined") {
+			return dataSet;
+		} else {
+			return dataSet;
+		}
 	} else {
-		return [];
+		throw new InsightError("dataset is undefined");
 	}
 };
 

@@ -5,7 +5,7 @@
 			"AND": [
 				{
 					"IS": {
-						"rooms_furniture": "*Tables*"
+						"rooms_furniture": "*Table*"
 					}
 				},
 				{
@@ -43,16 +43,32 @@
 	"errorExpected": false,
 	"expected": [
 		{
+			"rooms_shortname": "WOOD",
+			"maxSeats": 503
+		},
+		{
 			"rooms_shortname": "OSBO",
 			"maxSeats": 442
+		},
+		{
+			"rooms_shortname": "CIRS",
+			"maxSeats": 426
 		},
 		{
 			"rooms_shortname": "HEBB",
 			"maxSeats": 375
 		},
 		{
+			"rooms_shortname": "ESB",
+			"maxSeats": 350
+		},
+		{
 			"rooms_shortname": "LSC",
 			"maxSeats": 350
+		},
+		{
+			"rooms_shortname": "WESB",
+			"maxSeats": 325
 		}
 	]
 }

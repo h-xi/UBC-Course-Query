@@ -67,7 +67,7 @@ describe("InsightFacade", function () {
 		it("should list multiple datasets", function () {
 			return facade.addDataset("sections", sections, InsightDatasetKind.Sections)
 				.then(() => {
-					return facade.addDataset("sections-2", sections, InsightDatasetKind.Sections);
+					return facade.addDataset("rooms", rooms, InsightDatasetKind.Rooms);
 				})
 				.then(() => {
 					return facade.listDatasets();
@@ -80,9 +80,9 @@ describe("InsightFacade", function () {
 							numRows: 64612,
 						},
 						{
-							id: "sections-2",
-							kind: InsightDatasetKind.Sections,
-							numRows: 64612,
+							id: "rooms",
+							kind: InsightDatasetKind.Rooms,
+							numRows: 364,
 						}
 					];
 					expect(insightDatasets).to.have.deep.members(expectedDatasets);
@@ -116,6 +116,15 @@ describe("InsightFacade", function () {
 					expect(ids).to.be.an.instanceof(Array);
 					expect(ids).to.have.length(1);
 					expect(ids).to.deep.equal(["rooms"]);
+				});
+		});
+
+		it("should add one room dataset", function () {
+			return facade.addDataset("rooms1", rooms, InsightDatasetKind.Rooms)
+				.then((ids) => {
+					expect(ids).to.be.an.instanceof(Array);
+					expect(ids).to.have.length(1);
+					expect(ids).to.deep.equal(["rooms1"]);
 				});
 		});
 
@@ -166,6 +175,16 @@ describe("InsightFacade", function () {
  					expect(removeId).to.be.deep.equal("sections");
  				});
  		});
+
+		it("should remove one room dataset", function () {
+			return facade.addDataset("rooms", rooms, InsightDatasetKind.Rooms)
+				.then((ids) => {
+					return facade.removeDataset("rooms");
+				})
+				.then((removeId) => {
+					expect(removeId).to.be.deep.equal("rooms");
+				});
+		});
 
  		it("should reject with NotFoundError if try to remove a dataset hasn't been added yet", function () {
  			const result = facade.removeDataset("sections");
