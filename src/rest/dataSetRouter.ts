@@ -10,7 +10,7 @@ const facade: IInsightFacade = new InsightFacade();
 const addDatasetRouter = async (req: Request, res: Response) => {
 	let data = req.body;
 	let id = req.params.id;
-	let datasetType = req.params.kind;
+	let datasetType = req.params.kind.toLowerCase();
 	console.log(datasetType);
 	if (Object.keys(data).length === 0) {
 		return res.status(400).json({error: "Please provide dataset file"});
