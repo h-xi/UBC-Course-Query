@@ -25,7 +25,7 @@ const addDatasetRouter = async (req: Request, res: Response) => {
 		try {
 			data = new Buffer(data).toString("base64");
 			const result = await facade.addDataset(id, data, kind);
-			return res.status(200).json(result);
+			return res.status(200).json({result: result});
 		} catch (e: any) {
 			return res.status(400).json({
 				error: e.message
@@ -40,7 +40,7 @@ const removeDatasetRouter = async (req: Request, res: Response) => {
 	let id = req.params.id;
 	try {
 		const result = await facade.removeDataset(id);
-		return res.status(200).json(result);
+		return res.status(200).json({result: result});
 	} catch (e: any) {
 		if (e instanceof NotFoundError) {
 			return res.status(404).json({error: e.message});
@@ -52,7 +52,7 @@ const removeDatasetRouter = async (req: Request, res: Response) => {
 const listDatasetRouter = async (req: Request, res: Response) => {
 	try {
 		const response = await facade.listDatasets();
-		return res.status(200).json(response);
+		return res.status(200).json({result: response});
 	} catch (e: any) {
 		return res.status(400).json({error: e.message});
 	}
