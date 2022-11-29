@@ -22,6 +22,7 @@ const addDatasetRouter = async (req: Request, res: Response) => {
 		kind = InsightDatasetKind.Sections;
 	}
 	try {
+		data = data.toString("base64");
 		const result = await facade.addDataset(id, data, kind);
 		return res.send(result);
 	} catch (e: any) {
