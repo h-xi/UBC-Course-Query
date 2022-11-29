@@ -71,7 +71,8 @@ const processRooms = async (id: string, zipFile: string): Promise<any[]> => {
 				reject(e);
 			});
    	 });
- 	 } catch (e) {
+	} catch (e) {
+		console.log(e);
    	 throw new Error();
  	 }
 };

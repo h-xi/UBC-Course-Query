@@ -1,6 +1,7 @@
 import express, {Application, Request, Response} from "express";
 import * as http from "http";
 import cors from "cors";
+import {addDatasetRouter, removeDatasetRouter, listDatasetRouter} from "./dataSetRouter";
 
 export default class Server {
 	private readonly port: number;
@@ -83,6 +84,9 @@ export default class Server {
 		// This is an example endpoint this you can invoke by accessing this URL in your browser:
 		// http://localhost:4321/echo/hello
 		this.express.get("/echo/:msg", Server.echo);
+		this.express.put("/dataset/:id/:kind", addDatasetRouter);
+		this.express.delete("/dataset/:id", removeDatasetRouter);
+		this.express.get("/datasets", listDatasetRouter);
 
 		// TODO: your other endpoints should go here
 
