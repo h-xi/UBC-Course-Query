@@ -85,7 +85,7 @@ export default class Server {
 		// http://localhost:4321/echo/hello
 		this.express.get("/echo/:msg", Server.echo);
 		this.express.put("/dataset/:id/:kind", addDatasetRouter);
-		this.express.delete("dataset/:id", removeDatasetRouter);
+		this.express.delete("/dataset/:id", removeDatasetRouter);
 		this.express.get("/datasets", listDatasetRouter);
 
 		// TODO: your other endpoints should go here

@@ -76,7 +76,7 @@ export default class InsightFacade implements IInsightFacade {
 				reject(new InsightError("Invalid ID"));
 			}
 			if (!fs.existsSync(path.join(__dirname, `../../data/${id}.json`))) {
-				reject(new NotFoundError());
+				reject(new NotFoundError("Dataset not found"));
 			}
 			try {
 				fs.removeSync(path.join(__dirname, `../../data/${id}.json`));
