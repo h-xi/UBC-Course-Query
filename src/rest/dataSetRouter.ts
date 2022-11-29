@@ -44,13 +44,7 @@ const removeDatasetRouter = async (req: Request, res: Response) => {
 const listDatasetRouter = async (req: Request, res: Response) => {
 	try {
 		const response = await facade.listDatasets();
-		if (response.length === 0) {
-			return res.status(400).json({
-				message: "No dataset added"
-			});
-		} else {
-			return res.send(response);
-		}
+		return res.send(response);
 	} catch (e: any) {
 		return res.status(400).json({error: e.message});
 	}
