@@ -6,8 +6,29 @@
 		<link href="/style.css" rel="stylesheet" />
 	</head>
 	<body>
-		<button id="click-me-button" class="button" >Click Me!</button>
+		<br>
+		<h2 style="color:#3f51b5;"> Find the past years average grade of the course</h2>
+		<form>
+			Course Department (eg: cps*): <br>
+			<input type="text" id="dept" name="courseDepartment"> <br>
+			Course ID (eg: 31*):<br>
+			<input type="text" id="cid" name="courseID"> <br>
+		</form>
+		<br>
+		<button id="searchCourseButton" class="button" >Search</button>
+		<script type="text/javascript" src="/frontend.js"></script>
 
+		<br>
+		<br>
+		<br>
+
+		<h2 style="color:#3f51b5;"> Find suitable rooms for exam</h2>
+		<form>
+			Estimated Class Size: <br>
+			<input type="number" id="cSize" name="classSize"> <br>
+		</form>
+		<br>
+		<button id="searchRoomButton" class="button" >Search</button>
 		<script type="text/javascript" src="/frontend.js"></script>
 	</body>
 </html>

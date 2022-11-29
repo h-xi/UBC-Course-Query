@@ -1,4 +1,4 @@
-document.getElementById("click-me-button").addEventListener("click", handleClickMe);
+document.getElementById("searchCourseButton").addEventListener("click", handleClickMe);
 
 function handleClickMe() {
 	alert("Button Clicked!");

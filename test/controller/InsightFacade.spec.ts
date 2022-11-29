@@ -67,7 +67,7 @@ describe("InsightFacade", function () {
 		it("should list multiple datasets", function () {
 			return facade.addDataset("sections", sections, InsightDatasetKind.Sections)
 				.then(() => {
-					return facade.addDataset("sections-2", sections, InsightDatasetKind.Sections);
+					return facade.addDataset("rooms", rooms, InsightDatasetKind.Rooms);
 				})
 				.then(() => {
 					return facade.listDatasets();
@@ -80,9 +80,9 @@ describe("InsightFacade", function () {
 							numRows: 64612,
 						},
 						{
-							id: "sections-2",
-							kind: InsightDatasetKind.Sections,
-							numRows: 64612,
+							id: "rooms",
+							kind: InsightDatasetKind.Rooms,
+							numRows: 364,
 						}
 					];
 					expect(insightDatasets).to.have.deep.members(expectedDatasets);

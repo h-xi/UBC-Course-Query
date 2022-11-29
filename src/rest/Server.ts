@@ -1,16 +1,23 @@
 import express, {Application, Request, Response} from "express";
 import * as http from "http";
 import cors from "cors";
+import {App} from "../App";
+import InsightFacade from "../controller/InsightFacade";
+import {IInsightFacade, InsightError, InsightResult, ResultTooLargeError} from "../controller/IInsightFacade";
+import {postHandler} from "./postQueryRouter";
 
 export default class Server {
 	private readonly port: number;
 	private express: Application;
 	private server: http.Server | undefined;
 
+	private facade: IInsightFacade;
+
 	constructor(port: number) {
 		console.info(`Server::<init>( ${port} )`);
 		this.port = port;
 		this.express = express();
+		this.facade = new InsightFacade();
 
 		this.registerMiddleware();
 		this.registerRoutes();
@@ -18,7 +25,7 @@ export default class Server {
 		// NOTE: you can serve static frontend files in from your express server
 		// by uncommenting the line below. This makes files in ./frontend/public
 		// accessible at http://localhost:<port>/
-		// this.express.use(express.static("./frontend/public"))
+		this.express.use(express.static("./frontend/public"));
 	}
 
 	/**
@@ -85,7 +92,7 @@ export default class Server {
 		this.express.get("/echo/:msg", Server.echo);
 
 		// TODO: your other endpoints should go here
-
+		this.express.post("/query", postHandler);
 	}
 
 	// The next two methods handle the echo service.
