@@ -1,5 +1,8 @@
 import InsightFacade from "../controller/InsightFacade";
-import {IInsightFacade, InsightDatasetKind, InsightError,} from "../controller/IInsightFacade";
+import {
+	IInsightFacade, InsightDatasetKind, InsightError,
+	ResultTooLargeError, InsightResult, NotFoundError
+} from "../controller/IInsightFacade";
 import {Request, Response} from "express";
 
 const facade: IInsightFacade = new InsightFacade();
@@ -39,6 +42,9 @@ const removeDatasetRouter = async (req: Request, res: Response) => {
 		const result = await facade.removeDataset(id);
 		return res.send(result);
 	} catch (e: any) {
+		if (e instanceof NotFoundError) {
+			return res.status(404).json({error: e.message});
+		}
 		return res.status(400).json({error: e.message});
 	}
 };
@@ -52,4 +58,13 @@ const listDatasetRouter = async (req: Request, res: Response) => {
 	}
 };
 
-export {addDatasetRouter, removeDatasetRouter, listDatasetRouter};
+const postHandler = (req: Request, res: Response) => {
+	console.log(`Server::postHandler(..) - params: ${JSON.stringify(req.body)}`);
+	facade.performQuery(req.body).then(function(queryResult: InsightResult[]) {
+		res.status(200).json({result: queryResult});
+	}).catch(function (queryError: InsightError | ResultTooLargeError) {
+		res.status(400).json({error: queryError.message});
+	});
+};
+
+export {addDatasetRouter, removeDatasetRouter, listDatasetRouter, postHandler};
