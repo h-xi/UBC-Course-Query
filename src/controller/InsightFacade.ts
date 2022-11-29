@@ -65,7 +65,13 @@ export default class InsightFacade implements IInsightFacade {
 				throw new InsightError("Error saving dataset to disk");
 			}
 		} else {
-			console.error("error! Dataset already exists");
+			if (!this.addedDatasetID.includes(id)) {
+				try {
+					this.retrieveDatasetFromDisk(id);
+				} catch (e) {
+					throw new InsightError("Error adding dataset into Memory");
+				}
+			}
 			throw new InsightError("Dataset already exists");
 		}
 	};
@@ -82,6 +88,7 @@ export default class InsightFacade implements IInsightFacade {
 				fs.removeSync(path.join(__dirname, `../../data/${id}.json`));
 				this.addedDatasetID = this.addedDatasetID.filter((dataID) => dataID !== id);
 				this.memDataset = this.memDataset.filter((o) => o.id !== id);
+				this.listOfAddedData = this.listOfAddedData.filter((o) => o.id !== id);
 				fullfill(id);
 			} catch (error) {
 				reject(error);
@@ -89,9 +96,9 @@ export default class InsightFacade implements IInsightFacade {
 		});
 	};
 
-	public performQuery(query: unknown): Promise<InsightResult[]> {
+	public performQuery = async (query: unknown): Promise<InsightResult[]> => {
 		return new Promise((fullfill, reject) => {
-			let queryDataSet: MemoryDataSet|undefined;
+			let queryDataSet: MemoryDataSet | undefined;
 			let id: string = "";
 			try {
 				id = this.isQueryValid(query);
@@ -100,11 +107,11 @@ export default class InsightFacade implements IInsightFacade {
 				reject(error);
 			}
 			if (typeof queryDataSet === "undefined") {
-				reject (new InsightError("error when retrieved dataset"));
+				reject(new InsightError("error when retrieved dataset"));
 			}
 			const queryContent = queryDataSet?.content;
 			if (typeof queryContent === "undefined") {
-				reject (new InsightError("empty content of retrieved dataset"));
+				reject(new InsightError("empty content of retrieved dataset"));
 			}
 			const filter = (query as any)["WHERE"];
 			const options = (query as any)["OPTIONS"];
@@ -115,8 +122,8 @@ export default class InsightFacade implements IInsightFacade {
 				fullfill(zeroResult);
 			}
 			let transformedData: InsightResult[];
-			let columnsKey: string [] = getColumnsKey(options);
-			let finalResult: InsightResult [];
+			let columnsKey: string[] = getColumnsKey(options);
+			let finalResult: InsightResult[];
 			if (typeof transformation !== "undefined") {
 				transformedData = transformData(transformation, filteredDataSet);
 				if (transformedData.length > 5000) {
@@ -135,7 +142,7 @@ export default class InsightFacade implements IInsightFacade {
 			finalResult = renameKeyWithId(finalResult, id);
 			fullfill(finalResult);
 		});
-	}
+	};
 
 	private isQueryValid(query: any): string {   // can return dataset id here
 		let idStringArray: string [] = [];  // check access dataset id is correct later
@@ -183,7 +190,16 @@ export default class InsightFacade implements IInsightFacade {
 		let counter: number = 0;
 		for (let s of idArray) {
 			if (!this.addedDatasetID.includes(s)) {
-				throw new InsightError("error: try to query nonexistent dataset");
+				if (!fs.existsSync(path.join(__dirname, `../../data/${s}.json`))) {
+					throw new InsightError("error: try to query nonexistent dataset");
+				} else {
+					try {
+						this.retrieveDatasetFromDisk(s);
+					} catch (e) {
+						console.log(e);
+						throw new InsightError("Invalid Dataset");
+					}
+				}
 			}
 			if (s === idArray[0]) {
 				counter++;
@@ -195,11 +211,32 @@ export default class InsightFacade implements IInsightFacade {
 		return true;
 	}
 
+	private retrieveDatasetFromDisk = (id: string) => {
+		const diskDataset = fs.readFileSync(path.join(__dirname, `../../data/${id}.json`), "utf-8");
+		this.addedDatasetID.push(id);
+		let datasetInstance = {} as MemoryDataSet;
+		let memInstance = {} as InsightDataset;
+		try {
+			const parsedData = JSON.parse(diskDataset);
+			memInstance.id = id;
+			memInstance.kind = parsedData.kind;
+			memInstance.numRows = parsedData.content.length;
+			datasetInstance.id = id;
+			datasetInstance.content = parsedData.content;
+			this.memDataset.push(datasetInstance);
+			this.listOfAddedData.push(memInstance);
+		} catch (e) {
+			console.log(e);
+			throw new InsightError("Dataset invalid");
+		}
+	};
+
 	public listDatasets(): Promise<InsightDataset[]> {
 		return new Promise((fullfill) => {
 			fullfill(this.listOfAddedData);
 		});
 	}
+
 
 	private addIntoListOfAddedData = (id: string, numRows: number, kind: InsightDatasetKind) => {
 		const addedDataSet = {} as InsightDataset;

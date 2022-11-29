@@ -3,6 +3,7 @@ import {parse} from "parse5";
 import {Document} from "parse5/dist/tree-adapters/default";
 import request from "node:http";
 import {saveToDisk} from "./CourseDataProcessHelpers";
+import {InsightDatasetKind} from "./IInsightFacade";
 
 interface Rooms {
 	fullname: string,
@@ -63,7 +64,7 @@ const processRooms = async (id: string, zipFile: string): Promise<any[]> => {
               	  roomsObjectList.splice(Number(num), 1);
              	 }
 					}
-					saveToDisk(id, roomsObjectList);
+					saveToDisk(id, roomsObjectList, InsightDatasetKind.Rooms);
 					fulfill(roomsObjectList);
          	 });
 			}).catch((e) => {

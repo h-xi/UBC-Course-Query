@@ -2,6 +2,7 @@ import fs from "fs-extra";
 import path from "path";
 import jsZip from "jszip";
 import {parse} from "parse5";
+import {InsightDatasetKind} from "./IInsightFacade";
 
 interface Course {
 	dept: string,
@@ -14,6 +15,11 @@ interface Course {
 	audit: string,
 	uuid: number,
 	year: number
+}
+
+interface SavedDataset {
+	kind: InsightDatasetKind
+	content: any [];
 }
 
 
@@ -41,7 +47,7 @@ const createCourseMapping = (id: string, processedCourses: any []): Course [] =>
 			courses.push(course);
 	  });
 	});
-	saveToDisk(id, courses);
+	saveToDisk(id, courses, InsightDatasetKind.Sections);
 	return courses;
 };
 
@@ -79,8 +85,11 @@ const processCourses = async (zipFile: string): Promise<any []> => {
 	});
 };
 
-const saveToDisk = (fileID: string, processedData: any []) => {
-	const stringData = JSON.stringify(processedData);
+const saveToDisk = (fileID: string, processedData: any[], kind: InsightDatasetKind) => {
+	let SavedDataset = {} as SavedDataset;
+	SavedDataset.kind = kind;
+	SavedDataset.content = processedData;
+	const stringData = JSON.stringify(SavedDataset);
 	fs.outputFileSync(path.join(__dirname, `../../data/${fileID}.json`), stringData);
 };
 
