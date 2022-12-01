@@ -4,12 +4,12 @@ const handler = () => {
 	const query = createCourseQuery(id, dept);
 	const request = new XMLHttpRequest();
 	request.responseType = "json";
-	request.onLoad = () => {
+	request.onload = () => {
 		if (request.status === 400) {
 			alert(httpRequest.response.error);
 		} else {
-			console.log(httpRequest.response.result);
-			createTable(httpRequest.response.result);
+			console.log("hello", request.response.result);
+			createCourseTable(request.response.result);
 		}
 	};
 	request.open("POST", "http://localhost:4321/query");
@@ -40,7 +40,7 @@ const createCourseQuery = (id, dept) => {
 	return query;
 };
 
-const createTable = (resultArray) => {
+const createCourseTable = (resultArray) => {
 	let table = document.getElementById("courseQueryResult");
 
 	for (let i = 0; i < resultArray.length; i++) {
