@@ -11,7 +11,7 @@ function handleSearchRoom() {
 	httpRequest.onload = () => {
 		if (httpRequest.status === 400) {
 			// console.log(httpRequest.response);
-			alert(httpRequest.response.error);
+			alert(httpRequest.response.error + ".  Please check your input!");
 		} else {
 			console.log(httpRequest.response.result);
 			createTable(httpRequest.response.result)
@@ -43,7 +43,6 @@ function createTable(resultArray) {
 							<td>${resultArray[i].rooms_href}</td>
 					  </tr>`
 		table.innerHTML += row
-
 	}
 }
 
