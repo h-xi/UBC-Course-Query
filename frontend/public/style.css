@@ -12,3 +12,8 @@
 .button:hover {
 	cursor: pointer;
 }
+
+.table {
+	top:0;
+	right:0;
+}

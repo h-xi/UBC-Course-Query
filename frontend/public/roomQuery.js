@@ -13,7 +13,8 @@ function handleSearchRoom() {
 			// console.log(httpRequest.response);
 			alert(httpRequest.response.error);
 		} else {
-			// createTable(httpRequest.response.result)
+			console.log(httpRequest.response.result);
+			createTable(httpRequest.response.result)
 		}
 		// if (httpRequest.readyState === httpRequest.DONE) {
 		// 	if (httpRequest.status === 400) {
@@ -29,6 +30,10 @@ function handleSearchRoom() {
 	httpRequest.open('POST', 'http://localhost:4321/query');
 	httpRequest.setRequestHeader('Content-Type', 'application/json');
 	httpRequest.send(JSON.stringify(roomQuery));
+}
+
+function createTable(resultArray) {
+
 }
 
 function createRoomQuery(classSize) {
