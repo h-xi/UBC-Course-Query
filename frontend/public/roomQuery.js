@@ -33,7 +33,18 @@ function handleSearchRoom() {
 }
 
 function createTable(resultArray) {
+	let table = document.getElementById('roomQueryResult')
 
+	for (let i = 0; i < resultArray.length; i++){
+		let row = `<tr>
+							<td>${resultArray[i].rooms_shortname}</td>
+							<td>${resultArray[i].rooms_number}</td>
+							<td>${resultArray[i].rooms_seats}</td>
+							<td>${resultArray[i].rooms_href}</td>
+					  </tr>`
+		table.innerHTML += row
+
+	}
 }
 
 function createRoomQuery(classSize) {
