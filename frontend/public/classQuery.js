@@ -8,6 +8,7 @@ const handler = () => {
 		if (request.status === 400) {
 			alert(httpRequest.response.error);
 		} else {
+			console.log(httpRequest.response.result);
 			createTable(httpRequest.response.result);
 		}
 	};
