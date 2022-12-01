@@ -42,6 +42,7 @@ const createCourseQuery = (id, dept) => {
 
 const createCourseTable = (resultArray) => {
 	let table = document.getElementById("courseQueryResult");
+	table.innerHTML = "";
 
 	for (let i = 0; i < resultArray.length; i++) {
 		let row = `<tr>
