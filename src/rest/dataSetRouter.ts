@@ -59,7 +59,7 @@ const listDatasetRouter = async (req: Request, res: Response) => {
 };
 
 const postHandler = (req: Request, res: Response) => {
-	console.log(`Server::postHandler(..) - params: ${JSON.stringify(req.body)}`);
+	// console.log(`Server::postHandler(..) - params: ${JSON.stringify(req.body)}`);
 	facade.performQuery(req.body).then(function(queryResult: InsightResult[]) {
 		res.status(200).json({result: queryResult});
 	}).catch(function (queryError: InsightError | ResultTooLargeError) {
