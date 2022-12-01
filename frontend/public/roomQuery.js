@@ -11,7 +11,7 @@ function handleSearchRoom() {
 	httpRequest.onload = () => {
 		if (httpRequest.status === 400) {
 			// console.log(httpRequest.response);
-			alert(httpRequest.response.error + ".  Please check your input!");
+			alert(httpRequest.response.error + ".  Please input a valid number and try again!");
 		} else {
 			console.log(httpRequest.response.result);
 			createTable(httpRequest.response.result)
