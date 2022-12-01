@@ -8,22 +8,11 @@ function handleSearchRoom() {
 	httpRequest.responseType = "json";
 	httpRequest.onload = () => {
 		if (httpRequest.status === 400) {
-			// console.log(httpRequest.response);
 			alert(httpRequest.response.error + ".  Please input a valid number and try again!");
 		} else {
 			console.log(httpRequest.response.result);
 			createTable(httpRequest.response.result);
 		}
-		// if (httpRequest.readyState === httpRequest.DONE) {
-		// 	if (httpRequest.status === 400) {
-		// 		// console.log(httpRequest.response);
-		// 		alert(httpRequest.response.error);
-		// 	} else {
-		// 		// createTable(httpRequest.response.result)
-		// 	}
-		// } else {
-		// 	// maybe do something
-		// }
 	};
 	httpRequest.open("POST", "http://localhost:4321/query");
 	httpRequest.setRequestHeader("Content-Type", "application/json");
@@ -45,6 +34,8 @@ function createTable(resultArray) {
 	}
 }
 
+// table style in style.css is from: https://www.w3schools.com/css/tryit.asp?filename=trycss_table_fancy
+// create table method reference: https://www.youtube.com/watch?v=ru_YWeOh2kU&t=106s
 function createRoomQuery(classSize) {
 	let query = {
 		WHERE: {

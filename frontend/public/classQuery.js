@@ -6,7 +6,7 @@ const handler = () => {
 	request.responseType = "json";
 	request.onload = () => {
 		if (request.status === 400) {
-			alert(httpRequest.response.error);
+			alert(request.response.error + ".  Please check the course entered and try again!");
 		} else {
 			console.log("hello", request.response.result);
 			createCourseTable(request.response.result);
@@ -40,6 +40,8 @@ const createCourseQuery = (id, dept) => {
 	return query;
 };
 
+// table style in style.css is from: https://www.w3schools.com/css/tryit.asp?filename=trycss_table_fancy
+// create table method reference: https://www.youtube.com/watch?v=ru_YWeOh2kU&t=106s
 const createCourseTable = (resultArray) => {
 	let table = document.getElementById("courseQueryResult");
 	table.innerHTML = "";
