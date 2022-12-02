@@ -1,2 +1,3 @@
 ### Frontend Demo Video Link
-TODO: Add link to frontend demo video here
+
+https://www.youtube.com/watch?v=jpy_0uYiQsc&ab_channel=Has
