@@ -1,6 +1,6 @@
 const handler = () => {
-	const id = document.getElementById("cid").value;
-	const dept = document.getElementById("dept").value;
+	const id = document.getElementById("cid").value.toLowerCase();
+	const dept = document.getElementById("dept").value.toLowerCase();
 	const query = createCourseQuery(id, dept);
 	const request = new XMLHttpRequest();
 	request.responseType = "json";
