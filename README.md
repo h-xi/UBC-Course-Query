@@ -1,4 +1,4 @@
-# CPSC 310 Project Repository
+# UBC Insight
 
 In the project folder:
 
